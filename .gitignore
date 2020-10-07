@@ -1,0 +1,6 @@
+.DS_Store
+.idea/**
+z-backup/**
+excl_*.sql
+temp/*
+**/__pycache__/**
