@@ -1,0 +1,68 @@
+{
+  "template_dirname": "query_templates",
+  "output_dirname": "query_output",
+  "parameters": {
+    "a-planet-db": {
+      "host_address": "rds.amazonaws.com",
+      "superuser": "postgres",
+      "db_name": "planet",
+      "db_schema": "public",
+      "gbmi_schema": "gbmi",
+      "new_users": [
+        {
+          "new_user": "adam",
+          "password": "xyzxyz"
+        },
+        {
+          "new_user": "hana",
+          "password": "abcabc"
+        }
+      ]
+    },
+    "b-rasters-and-gadm": {
+      "host_address": "rds.amazonaws.com",
+      "db_name": "openstreetmap",
+      "db_schema": "public",
+      "user": "tom",
+      "gadm_source_file": "/data/gadm36_shp/gadm36.shp",
+      "gadm_target_table": "gadm36",
+      "rasters": [
+        {
+          "raster_name": "worldpop2020",
+          "raster_source_file": "/data/worldpop/ppp_2020_1km_aggregated.tif",
+          "raster_target_table": "raw_tiles_worldpop2020"
+        },
+        {
+          "raster_name": "guf",
+          "raster_source_file": "/data/GUF_tile/guf_tile_4326.tif",
+          "raster_target_table": "raw_tiles_guf"
+        }
+      ]
+    },
+    "c-gbmi": {
+      "db_schema": "public",
+      "gbmi_schema": "gbmi",
+      "raster_names": [
+        {
+          "raster_name": "guf"
+        },
+        {
+          "raster_name": "worldpop2020"
+        }
+      ],
+      "buffers": [
+        {
+          "buffer": 100
+        },
+        {
+          "buffer": 200
+        },
+        {
+          "buffer": 250
+        }
+      ]
+    }
+  },
+  "overwrite": true
+}
+

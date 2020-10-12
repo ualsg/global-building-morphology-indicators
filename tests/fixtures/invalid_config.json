@@ -1,0 +1,9 @@
+{
+  "parameters": {
+    "a-planet-db": {
+      "host_address": {}
+    },
+    "b-rasters-and-gadm": {},
+    "y-visualization": {}
+  }
+}
