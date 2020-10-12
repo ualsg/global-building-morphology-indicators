@@ -1,0 +1,96 @@
+{
+  "template_dirname": "query_templates",
+  "output_dirname": "query_output",
+  "parameters": {
+    "a-planet-db": {
+      "a": "a",
+      "b": "b",
+      "c": [
+        {
+          "c1a": "c1a",
+          "c1b": "c1b"
+        },
+        {
+          "c2a": "c2a",
+          "c2b": "c2b"
+        }
+      ]
+    },
+    "b-rasters-and-gadm": {
+    },
+    "c-analysis": {
+      "public_schema": "public",
+      "raster_names": [
+        {
+          "raster_name": "guf"
+        },
+        {
+          "raster_name": "worldpop2020"
+        }
+      ]
+    },
+    "d-gbmi": {},
+    "y-visualization": {
+      "public_schema": "public",
+      "raster_names": [
+        {
+          "raster_name": "guf"
+        },
+        {
+          "raster_name": "worldpop2020"
+        }
+      ],
+      "measures": [
+        {
+          "measure": "height"
+        },
+        {
+          "measure": "levels"
+        }
+      ]
+    },
+    "z-misc": {
+      "public_schema": "public",
+      "raster_names": [
+        {
+          "raster_name": "guf"
+        },
+        {
+          "raster_name": "worldpop2020"
+        }
+      ],
+      "area_thresholds": [
+        {
+          "area_threshold": 1
+        },
+        {
+          "area_threshold": 2
+        },
+        {
+          "area_threshold": 3
+        }
+      ],
+      "gsv_buildings_batches": [
+        {
+          "batch_no": 1,
+          "building_w_levels_count_threshold": 2,
+          "building_wo_levels_count_threshold": 2,
+          "cell_rn": 1,
+          "bldg_rn": 2
+        }
+      ],
+      "table_duplicates": [
+        {
+          "table_name": "buildings_by_worldpop2020",
+          "columns": "\"osm_id\", \"tags\", \"way\", \"way_centroid\", \"cmplt_bldg_area\", \"cmplt_bldg_perimeter\", \"calc_count_vertices\""
+        },
+        {
+          "table_name": "buildings_by_guf",
+          "columns": "\"osm_id\", \"tags\", \"way\", \"way_centroid\", \"cmplt_bldg_area\", \"cmplt_bldg_perimeter\", \"calc_count_vertices\""
+        }
+      ]
+    }
+  },
+  "overwrite": false
+}
+
