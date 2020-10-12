@@ -1,0 +1,8 @@
+{
+    "template_dirname":
+    "parameters": {
+        "actions": {
+            "generate_most_frequent_attribute_queries":
+        }
+    }
+}

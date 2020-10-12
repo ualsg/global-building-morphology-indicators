@@ -1,0 +1,759 @@
+{
+  "template_dirname": "query_templates",
+  "output_dirname": "query_output",
+  "parameters": {
+    "common": {
+      "host_address": "localhost",
+      "db_script_dir": "/data/sql_scripts/db-setup",
+      "public_schema": "public",
+      "public_script_dir": "/data/sql_scripts/osm-public",
+      "misc_schema": "misc",
+      "misc_script_dir": "/data/sql_scripts/osm-misc",
+      "gbmi_schema": "gbmi",
+      "gbmi_script_dir": "/data/sql_scripts/osm-gbmi",
+      "qa_schema": "osm_qa",
+      "qa_script_dir": "/data/sql_scripts/osm-qa",
+      "base_source_dir": "/data/base-sources",
+      "site_source_dir": "/data/site-sources",
+      "country_codes_dir": "/data/base-sources/country_codes",
+      "country_codes_file": "country_codes_no_header.csv",
+      "gadm_source_dir": "/data/base-sources/gadm36",
+      "gadm_source_file": "gadm36.shp",
+      "gadm_target_table": "gadm36",
+      "export_base_dir": "/data/gbmi_export",
+      "export_script_dir": "/data/sql_scripts/gbmi-export"
+    },
+    "a-db-setup": {
+      "databases": [
+        {
+          "database": "singapore"
+        },
+        {
+          "database": "ulaanbaatar"
+        },
+        {
+          "database": "kinta"
+        },
+        {
+          "database": "delft"
+        },
+        {
+          "database": "amsterdam"
+        },
+        {
+          "database": "zagreb"
+        },
+        {
+          "database": "lugano"
+        },
+        {
+          "database": "barcelona"
+        },
+        {
+          "database": "kyoto"
+        },
+        {
+          "database": "ankara"
+        },
+        {
+          "database": "chennai"
+        },
+        {
+          "database": "quito"
+        },
+        {
+          "database": "san_francisco"
+        },
+        {
+          "database": "nairobi"
+        },
+        {
+          "database": "kampala"
+        },
+        {
+          "database": "melbourne"
+        },
+        {
+          "database": "greater_london"
+        },
+        {
+          "database": "toronto"
+        },
+        {
+          "database": "new_zealand"
+        },
+        {
+          "database": "sao_paulo"
+        },
+        {
+          "database": "switzerland"
+        },
+        {
+          "database": "argentina"
+        },
+        {
+          "database": "medellin"
+        },
+        {
+          "database": "maseru"
+        },
+        {
+          "database": "begawan"
+        },
+        {
+          "database": "beirut"
+        },
+        {
+          "database": "planet"
+        }
+      ],
+      "users": [
+        {
+          "new_user": "filip",
+          "password": "xsxsxsxs"
+        },
+        {
+          "new_user": "jupyter",
+          "password": "xyxyxyxy"
+        }
+      ],
+      "superusers": [
+        {
+          "new_superuser": "yoongshin",
+          "password": "yyyyyyyyy"
+        }
+      ]
+    },
+    "b-osm-rasters-gadm": {
+      "osm_source_files": [
+        {
+          "database": "singapore",
+          "osm_source_file": "singapore-20211015.osm.pbf"
+        },
+        {
+          "database": "amsterdam",
+          "osm_source_file": "amsterdam-20210803.osm.pbf"
+        },
+        {
+          "database": "ulaanbaatar",
+          "osm_source_file": "ulaanbaatar-20210826.osm.pbf"
+        },
+        {
+          "database": "kinta",
+          "osm_source_file": "kinta-20210825.osm.pbf"
+        },
+        {
+          "database": "zagreb",
+          "osm_source_file": "zagreb-20210825.osm.pbf"
+        },
+        {
+          "database": "lugano",
+          "osm_source_file": "lugano-20210826.osm.pbf"
+        },
+        {
+          "database": "delft",
+          "osm_source_file": "delft-20210825.osm.pbf"
+        },
+        {
+          "database": "barcelona",
+          "osm_source_file": "barcelona-20210803.osm.pbf"
+        },
+        {
+          "database": "kyoto",
+          "osm_source_file": "kyoto-20210803.osm.pbf"
+        },
+        {
+          "database": "ankara",
+          "osm_source_file": "ankara-20210803.osm.pbf"
+        },
+        {
+          "database": "chennai",
+          "osm_source_file": "chennai-20210803.osm.pbf"
+        },
+        {
+          "database": "quito",
+          "osm_source_file": "quito-20210803.osm.pbf"
+        },
+        {
+          "database": "san_francisco",
+          "osm_source_file": "san_francisco-20210308.osm.pbf"
+        },
+        {
+          "database": "nairobi",
+          "osm_source_file": "nairobi-20210803.osm.pbf"
+        },
+        {
+          "database": "kampala",
+          "osm_source_file": "kampala-20210308.osm.pbf"
+        },
+        {
+          "database": "melbourne",
+          "osm_source_file": "melbourne-20210308.osm.pbf"
+        },
+        {
+          "database": "greater_london",
+          "osm_source_file": "greater_london-20210308.osm.pbf"
+        },
+        {
+          "database": "toronto",
+          "osm_source_file": "toronto-20210803.osm.pbf"
+        },
+        {
+          "database": "new_zealand",
+          "osm_source_file": "new-zealand-20210803.osm.pbf"
+        },
+        {
+          "database": "sao_paulo",
+          "osm_source_file": "sao-paulo-20210308.osm.pbf"
+        },
+        {
+          "database": "switzerland",
+          "osm_source_file": "switzerland-20210803.osm.pbf"
+        },
+        {
+          "database": "argentina",
+          "osm_source_file": "argentina-20210803.osm.pbf"
+        },
+        {
+          "database": "medellin",
+          "osm_source_file": "medellin-20211017.osm.pbf"
+        },
+        {
+          "database": "maseru",
+          "osm_source_file": "mesaru-20211017.osm.pbf"
+        },
+        {
+          "database": "begawan",
+          "osm_source_file": "begawan-20211017.osm.pbf"
+        },
+        {
+          "database": "beirut",
+          "osm_source_file": "beirut-20211017.osm.pbf"
+        },
+        {
+          "database": "planet",
+          "osm_source_file": "planet-20210927.osm.pbf"
+        }
+      ],
+      "raster_names": [
+        {
+          "raster_name": "worldpop2020_1km",
+          "raster_population": "cell_population",
+          "raster_file_suffix": "_ppp_2020_1km_Aggregated"
+        },
+        {
+          "raster_name": "worldpop2020_100m",
+          "raster_population": "cell_population",
+          "raster_file_suffix": "_ppp_2020_100m"
+        }
+      ],
+      "agg_levels": [
+        {
+          "source_table": "gadm36",
+          "agg_level": "admin_div5",
+          "agg_geom": "geom",
+          "agg_columns": "name_0 AS country,\n                                                            name_1 AS admin_div1,\n                                                            name_2 AS admin_div2,\n                                                            name_3 AS admin_div3,\n                                                            name_4 AS admin_div4,\n                                                            name_5 AS admin_div5",
+          "order_columns": "name_0, name_1, name_2, name_3, name_4, name_5"
+        },
+        {
+          "source_table": "agg_gadm36_geom_areas_admin_div5",
+          "agg_level": "admin_div4",
+          "agg_geom": "agg_geom_admin_div5",
+          "agg_columns": "country,\n                                                            admin_div1,\n                                                            admin_div2,\n                                                            admin_div3,\n                                                            admin_div4",
+          "order_columns": "country, admin_div1, admin_div2, admin_div3, admin_div4"
+        },
+        {
+          "source_table": "agg_gadm36_geom_areas_admin_div4",
+          "agg_level": "admin_div3",
+          "agg_geom": "agg_geom_admin_div4",
+          "agg_columns": "country,\n                                                            admin_div1,\n                                                            admin_div2,\n                                                            admin_div3",
+          "order_columns": "country, admin_div1, admin_div2, admin_div3"
+        },
+        {
+          "source_table": "agg_gadm36_geom_areas_admin_div3",
+          "agg_level": "admin_div2",
+          "agg_geom": "agg_geom_admin_div3",
+          "agg_columns": "country,\n                                                            admin_div1,\n                                                            admin_div2",
+          "order_columns": "country, admin_div1, admin_div2"
+        },
+        {
+          "source_table": "agg_gadm36_geom_areas_admin_div2",
+          "agg_level": "admin_div1",
+          "agg_geom": "agg_geom_admin_div2",
+          "agg_columns": "country,\n                                                            admin_div1",
+          "order_columns": "country, admin_div1"
+        },
+        {
+          "source_table": "agg_gadm36_geom_areas_admin_div1",
+          "agg_level": "country",
+          "agg_geom": "agg_geom_admin_div1",
+          "agg_columns": "country",
+          "order_columns": "country"
+        }
+      ]
+    },
+    "c0-misc": {
+      "databases": [
+        {
+          "database": "singapore"
+        },
+        {
+          "database": "ulaanbaatar"
+        },
+        {
+          "database": "kinta"
+        },
+        {
+          "database": "delft"
+        },
+        {
+          "database": "amsterdam"
+        },
+        {
+          "database": "zagreb"
+        },
+        {
+          "database": "lugano"
+        },
+        {
+          "database": "barcelona"
+        },
+        {
+          "database": "kyoto"
+        },
+        {
+          "database": "ankara"
+        },
+        {
+          "database": "chennai"
+        },
+        {
+          "database": "quito"
+        },
+        {
+          "database": "san_francisco"
+        },
+        {
+          "database": "nairobi"
+        },
+        {
+          "database": "kampala"
+        },
+        {
+          "database": "melbourne"
+        },
+        {
+          "database": "greater_london"
+        },
+        {
+          "database": "toronto"
+        },
+        {
+          "database": "new_zealand"
+        },
+        {
+          "database": "sao_paulo"
+        },
+        {
+          "database": "switzerland"
+        },
+        {
+          "database": "argentina"
+        },
+        {
+          "database": "medellin"
+        },
+        {
+          "database": "maseru"
+        },
+        {
+          "database": "begawan"
+        },
+        {
+          "database": "beirut"
+        },
+        {
+          "database": "planet"
+        }
+      ],
+      "raster_names": [
+        {
+          "raster_name": "worldpop2020_1km"
+        },
+        {
+          "raster_name": "worldpop2020_100m"
+        }
+      ],
+      "agg_levels": [
+        {
+          "agg_level": "cell",
+          "agg_columns": "cell_id, cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5",
+          "agg_geom": "cell_geom",
+          "agg_area": "cell_area",
+          "join_clause": "",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5, cell_id"
+        },
+        {
+          "agg_level": "admin_div5",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5",
+          "agg_geom": "agg_geom_admin_div5",
+          "agg_area": "agg_area_admin_div5",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div5 agga ON rb.cell_country = agga.country AND rb.cell_admin_div1 = agga.admin_div1 AND rb.cell_admin_div2 = agga.admin_div2 AND rb.cell_admin_div3 = agga.admin_div3 AND rb.cell_admin_div4 = agga.admin_div4 AND rb.cell_admin_div5 = agga.admin_div5",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5"
+        },
+        {
+          "agg_level": "admin_div4",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4",
+          "agg_geom": "agg_geom_admin_div4",
+          "agg_area": "agg_area_admin_div4",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div4 agga ON rb.cell_country = agga.country AND rb.cell_admin_div1 = agga.admin_div1 AND rb.cell_admin_div2 = agga.admin_div2 AND rb.cell_admin_div3 = agga.admin_div3 AND rb.cell_admin_div4 = agga.admin_div4",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4"
+        },
+        {
+          "agg_level": "admin_div3",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3",
+          "agg_geom": "agg_geom_admin_div3",
+          "agg_area": "agg_area_admin_div3",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div3 agga ON rb.cell_country = agga.country AND rb.cell_admin_div1 = agga.admin_div1 AND rb.cell_admin_div2 = agga.admin_div2 AND rb.cell_admin_div3 = agga.admin_div3",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3"
+        },
+        {
+          "agg_level": "admin_div2",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2",
+          "agg_geom": "agg_geom_admin_div2",
+          "agg_area": "agg_area_admin_div2",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div2 agga ON rb.cell_country = agga.country AND rb.cell_admin_div1 = agga.admin_div1 AND rb.cell_admin_div2 = agga.admin_div2",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2"
+        },
+        {
+          "agg_level": "admin_div1",
+          "agg_columns": "cell_country, cell_admin_div1",
+          "agg_geom": "agg_geom_admin_div1",
+          "agg_area": "agg_area_admin_div1",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div1 agga ON rb.cell_country = agga.country AND rb.cell_admin_div1 = agga.admin_div1",
+          "order_columns": "cell_country, cell_admin_div1"
+        },
+        {
+          "agg_level": "country",
+          "agg_columns": "cell_country",
+          "agg_geom": "agg_geom_country",
+          "agg_area": "agg_area_country",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_country agga ON rb.cell_country = agga.country",
+          "order_columns": "cell_country"
+        }
+      ]
+    },
+    "c1-gbmi": {
+      "databases": [
+        {
+          "database": "singapore"
+        },
+        {
+          "database": "ulaanbaatar"
+        },
+        {
+          "database": "kinta"
+        },
+        {
+          "database": "delft"
+        },
+        {
+          "database": "amsterdam"
+        },
+        {
+          "database": "zagreb"
+        },
+        {
+          "database": "lugano"
+        },
+        {
+          "database": "barcelona"
+        },
+        {
+          "database": "kyoto"
+        },
+        {
+          "database": "ankara"
+        },
+        {
+          "database": "chennai"
+        },
+        {
+          "database": "quito"
+        },
+        {
+          "database": "san_francisco"
+        },
+        {
+          "database": "nairobi"
+        },
+        {
+          "database": "kampala"
+        },
+        {
+          "database": "melbourne"
+        },
+        {
+          "database": "greater_london"
+        },
+        {
+          "database": "toronto"
+        },
+        {
+          "database": "new_zealand"
+        },
+        {
+          "database": "sao_paulo"
+        },
+        {
+          "database": "switzerland"
+        },
+        {
+          "database": "argentina"
+        },
+        {
+          "database": "medellin"
+        },
+        {
+          "database": "maseru"
+        },
+        {
+          "database": "begawan"
+        },
+        {
+          "database": "beirut"
+        },
+        {
+          "database": "planet"
+        }
+      ],
+      "raster_names": [
+        {
+          "raster_name": "worldpop2020_1km",
+          "raster_population": "cell_population",
+          "limit_buffer": 50
+        },
+        {
+          "raster_name": "worldpop2020_100m",
+          "raster_population": "cell_population"
+        }
+      ],
+      "buffers": [
+        {
+          "buffer": 25
+        },
+        {
+          "buffer": 50
+        },
+        {
+          "buffer": 100
+        }
+      ],
+      "agg_levels": [
+        {
+          "agg_level": "cell",
+          "agg_columns": "cell_id, cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5",
+          "agg_geom": "cell_geom",
+          "agg_area": "cell_area",
+          "join_clause": "",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5, cell_id"
+        },
+        {
+          "agg_level": "admin_div5",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5",
+          "agg_geom": "agg_geom_admin_div5",
+          "agg_area": "agg_area_admin_div5",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div5 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1 AND bga.cell_admin_div2 = agga.admin_div2 AND bga.cell_admin_div3 = agga.admin_div3 AND bga.cell_admin_div4 = agga.admin_div4 AND bga.cell_admin_div5 = agga.admin_div5",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5"
+        },
+        {
+          "agg_level": "admin_div4",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4",
+          "agg_geom": "agg_geom_admin_div4",
+          "agg_area": "agg_area_admin_div4",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div4 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1 AND bga.cell_admin_div2 = agga.admin_div2 AND bga.cell_admin_div3 = agga.admin_div3 AND bga.cell_admin_div4 = agga.admin_div4",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4"
+        },
+        {
+          "agg_level": "admin_div3",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3",
+          "agg_geom": "agg_geom_admin_div3",
+          "agg_area": "agg_area_admin_div3",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div3 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1 AND bga.cell_admin_div2 = agga.admin_div2 AND bga.cell_admin_div3 = agga.admin_div3",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3"
+        },
+        {
+          "agg_level": "admin_div2",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2",
+          "agg_geom": "agg_geom_admin_div2",
+          "agg_area": "agg_area_admin_div2",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div2 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1 AND bga.cell_admin_div2 = agga.admin_div2",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2"
+        },
+        {
+          "agg_level": "admin_div1",
+          "agg_columns": "cell_country, cell_admin_div1",
+          "agg_geom": "agg_geom_admin_div1",
+          "agg_area": "agg_area_admin_div1",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div1 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1",
+          "order_columns": "cell_country, cell_admin_div1"
+        },
+        {
+          "agg_level": "country",
+          "agg_columns": "cell_country",
+          "agg_geom": "agg_geom_country",
+          "agg_area": "agg_area_country",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_country agga ON bga.cell_country = agga.country",
+          "order_columns": "cell_country"
+        }
+      ]
+    },
+    "d-export": {
+      "databases": [
+        {
+          "database": "singapore"
+        },
+        {
+          "database": "ulaanbaatar"
+        },
+        {
+          "database": "kinta"
+        },
+        {
+          "database": "delft"
+        },
+        {
+          "database": "amsterdam"
+        },
+        {
+          "database": "zagreb"
+        },
+        {
+          "database": "lugano"
+        },
+        {
+          "database": "barcelona"
+        },
+        {
+          "database": "kyoto"
+        },
+        {
+          "database": "ankara"
+        },
+        {
+          "database": "chennai"
+        },
+        {
+          "database": "quito"
+        },
+        {
+          "database": "san_francisco"
+        },
+        {
+          "database": "nairobi"
+        },
+        {
+          "database": "kampala"
+        },
+        {
+          "database": "melbourne"
+        },
+        {
+          "database": "greater_london"
+        },
+        {
+          "database": "toronto"
+        },
+        {
+          "database": "new_zealand"
+        },
+        {
+          "database": "sao_paulo"
+        },
+        {
+          "database": "switzerland"
+        },
+        {
+          "database": "argentina"
+        },
+        {
+          "database": "medellin"
+        },
+        {
+          "database": "maseru"
+        },
+        {
+          "database": "begawan"
+        },
+        {
+          "database": "beirut"
+        },
+        {
+          "database": "planet"
+        }
+      ],
+      "raster_names": [
+        {
+          "raster_name": "worldpop2020_1km",
+          "limit_buffer": 50
+        },
+        {
+          "raster_name": "worldpop2020_100m"
+        }
+      ],
+      "agg_levels": [
+        {
+          "agg_level": "admin_div5",
+          "agg_columns": "\\\"cell_country\\\" AS \\\"c_country\\\", \\\"cell_admin_div1\\\" AS \\\"c_adm_div1\\\", \\\"cell_admin_div2\\\" AS \\\"c_adm_div2\\\", \\\"cell_admin_div3\\\" AS \\\"c_adm_div3\\\", \\\"cell_admin_div4\\\" AS \\\"c_adm_div4\\\", \\\"cell_admin_div5\\\" AS \\\"c_adm_div5\\\"",
+          "agg_geom": "\\\"agg_geom_admin_div5\\\" AS \\\"agg_geom\\\"",
+          "agg_area": "\\\"agg_area_admin_div5\\\" AS \\\"agg_area\\\"",
+          "agg_geom_wkt": "ST_AsEWKT(\\\"agg_geom_admin_div5\\\") AS \\\"agg_geom\\\""
+        },
+        {
+          "agg_level": "admin_div4",
+          "agg_columns": "\\\"cell_country\\\" AS \\\"c_country\\\", \\\"cell_admin_div1\\\" AS \\\"c_adm_div1\\\", \\\"cell_admin_div2\\\" AS \\\"c_adm_div2\\\", \\\"cell_admin_div3\\\" AS \\\"c_adm_div3\\\", \\\"cell_admin_div4\\\" AS \\\"c_adm_div4\\\"",
+          "agg_geom": "\\\"agg_geom_admin_div4\\\" AS \\\"agg_geom\\\"",
+          "agg_area": "\\\"agg_area_admin_div4\\\" AS \\\"agg_area\\\"",
+          "agg_geom_wkt": "ST_AsEWKT(\\\"agg_geom_admin_div4\\\") AS \\\"agg_geom\\\""
+        },
+        {
+          "agg_level": "admin_div3",
+          "agg_columns": "\\\"cell_country\\\" AS \\\"c_country\\\", \\\"cell_admin_div1\\\" AS \\\"c_adm_div1\\\", \\\"cell_admin_div2\\\" AS \\\"c_adm_div2\\\", \\\"cell_admin_div3\\\" AS \\\"c_adm_div3\\\"",
+          "agg_geom": "\\\"agg_geom_admin_div3\\\" AS \\\"agg_geom\\\"",
+          "agg_area": "\\\"agg_area_admin_div3\\\" AS \\\"agg_area\\\"",
+          "agg_geom_wkt": "ST_AsEWKT(\\\"agg_geom_admin_div3\\\") AS \\\"agg_geom\\\""
+        },
+        {
+          "agg_level": "admin_div2",
+          "agg_columns": "\\\"cell_country\\\" AS \\\"c_country\\\", \\\"cell_admin_div1\\\" AS \\\"c_adm_div1\\\", \\\"cell_admin_div2\\\" AS \\\"c_adm_div2\\\"",
+          "agg_geom": "\\\"agg_geom_admin_div2\\\" AS \\\"agg_geom\\\"",
+          "agg_area": "\\\"agg_area_admin_div2\\\" AS \\\"agg_area\\\"",
+          "agg_geom_wkt": "ST_AsEWKT(\\\"agg_geom_admin_div2\\\") AS \\\"agg_geom\\\""
+        },
+        {
+          "agg_level": "admin_div1",
+          "agg_columns": "\\\"cell_country\\\" AS \\\"c_country\\\", \\\"cell_admin_div1\\\" AS \\\"c_adm_div1\\\"",
+          "agg_geom": "\\\"agg_geom_admin_div1\\\" AS \\\"agg_geom\\\"",
+          "agg_area": "\\\"agg_area_admin_div1\\\" AS \\\"agg_area\\\"",
+          "agg_geom_wkt": "ST_AsEWKT(\\\"agg_geom_admin_div1\\\") AS \\\"agg_geom\\\""
+        },
+        {
+          "agg_level": "country",
+          "agg_columns": "\\\"cell_country\\\" AS \\\"c_country\\\"",
+          "agg_geom": "\\\"agg_geom_country\\\" AS \\\"agg_geom\\\"",
+          "agg_area": "\\\"agg_area_country\\\" AS \\\"agg_area\\\"",
+          "agg_geom_wkt": "ST_AsEWKT(\\\"agg_geom_country\\\") AS \\\"agg_geom\\\""
+        },
+        {
+          "agg_level": "cell",
+          "agg_columns": "\\\"cell_id\\\" AS \\\"c_id\\\", \\\"cell_country\\\" AS \\\"c_country\\\", \\\"cell_admin_div1\\\" AS \\\"c_adm_div1\\\", \\\"cell_admin_div2\\\" AS \\\"c_adm_div2\\\", \\\"cell_admin_div3\\\" AS \\\"c_adm_div3\\\", \\\"cell_admin_div4\\\" AS \\\"c_adm_div4\\\", \\\"cell_admin_div5\\\" AS \\\"c_adm_div5\\\"",
+          "agg_geom": "\\\"cell_geom\\\" AS \\\"c_geom\\\"",
+          "agg_area": "\\\"cell_area\\\" AS \\\"agg_area\\\"",
+          "agg_geom_wkt": "ST_AsEWKT(\\\"cell_geom\\\") AS \\\"c_geom\\\""
+        }
+      ]
+    }
+  },
+  "overwrite": true
+}
+

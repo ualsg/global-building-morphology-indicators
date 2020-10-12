@@ -1,0 +1,23 @@
+{
+  "public_schema": "public",
+  "gbmi_schema": "gdmi",
+  "raster_names": [
+    {
+      "raster_name": "guf"
+    },
+    {
+      "raster_name": "worldpop2020"
+    }
+  ],
+  "buffers": [
+    {
+      "buffer": 100
+    },
+    {
+      "buffer": 200
+    },
+    {
+      "buffer": 250
+    }
+  ]
+}
