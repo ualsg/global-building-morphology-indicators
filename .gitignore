@@ -1,6 +1,9 @@
 .DS_Store
 .idea/**
 z-backup/**
+query_output/**
 excl_*.sql
 temp/*
 **/__pycache__/**
+query_output_old0/**
+**/*.log
