@@ -1,0 +1,21 @@
+#!/bin/bash
+
+declare -a databases=({{ databases }})
+declare -a raster_names=('worldpop2020_1km' 'worldpop2020_100m')
+
+if [[ ${databases[-1]} == 'planet' ]]; then
+  unset databases[-1]
+fi
+
+for db in "${databases[@]}"; do
+  for raster_name in "${raster_names[@]}"; do
+    if [[ "${db}" == "planet"  ||  "${db}" == "argentina"  ||  "${db}" == "new_zealand"  ||  "${db}" == "switzerland" ]] && [[ "${raster_name}" == "worldpop2020_100m" ]]; then
+      echo "Skipping ${raster_name} for ${db}."
+    else
+      cmd1="bash ./neighbours_tables_by_${raster_name}_${db}.sh"
+      cmd2="bash ./neighbours_tables_by_${raster_name}_centroid_${db}.sh"
+      eval "${cmd1}"
+      eval "${cmd2}"
+    fi
+  done
+done
