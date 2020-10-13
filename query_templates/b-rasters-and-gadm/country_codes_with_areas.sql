@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS {{db_schema}}.country_codes_with_areas CASCADE;
+
 CREATE TABLE {{db_schema}}.country_codes_with_areas AS (
 	WITH agg_gadm36_country_areas AS (
 		SELECT
