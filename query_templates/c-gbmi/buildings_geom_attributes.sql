@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_attributes CASCADE;
+DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_geom_attributes CASCADE;
 
-CREATE TABLE {{gbmi_schema}}.buildings_attributes AS (
+CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes AS (
                                      WITH dumped_mbr AS (
                                                         SELECT
                                                             osm_id,

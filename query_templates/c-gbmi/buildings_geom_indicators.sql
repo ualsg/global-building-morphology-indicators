@@ -62,5 +62,5 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators AS (
                                              WHEN start_date IS NOT NULL THEN percent_rank() OVER (ORDER BY start_date)
                                          END AS start_date_pct_rnk
                                      FROM
-                                         {{gbmi_schema}}.buildings_attributes
-                                     )
+                                         {{gbmi_schema}}.buildings_geom_attributes
+                                     );
