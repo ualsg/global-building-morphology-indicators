@@ -66,6 +66,11 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_cell_{{raster_name
                                                                                    avg(compactness) AS mean_compactness,
                                                                                    max(compactness) AS max_compactness,
                                                                                    stddev_pop(compactness) AS sd_compactness,
+                                                                                   min(equivalent_rectangular_index) AS min_equivalent_rectangular_index,
+                                                                                   percentile_cont(0.5) WITHIN GROUP ( ORDER BY equivalent_rectangular_index ) AS median_equivalent_rectangular_index,
+                                                                                   avg(equivalent_rectangular_index) AS mean_equivalent_rectangular_index,
+                                                                                   max(equivalent_rectangular_index) AS max_equivalent_rectangular_index,
+                                                                                   stddev_pop(equivalent_rectangular_index) AS sd_equivalent_rectangular_index,
                                                                                    min(azimuth) AS min_azimuth,
                                                                                    percentile_cont(0.5) WITHIN GROUP (ORDER BY azimuth) AS median_azimuth,
                                                                                    CASE
@@ -241,6 +246,19 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_cell_{{raster_name
                                                                           WHEN mean_compactness IS NOT NULL
                                                                               THEN percent_rank() OVER (ORDER BY mean_compactness)
                                                                       END AS mean_compactness_pct_rnk,
+                                                                      min_equivalent_rectangular_index,
+                                                                      median_equivalent_rectangular_index,
+                                                                      mean_equivalent_rectangular_index,
+                                                                      max_equivalent_rectangular_index,
+                                                                      sd_equivalent_rectangular_index,
+                                                                      CASE
+                                                                          WHEN mean_equivalent_rectangular_index > 0
+                                                                              THEN (sd_equivalent_rectangular_index) ^ 2 / mean_equivalent_rectangular_index
+                                                                      END AS d_equivalent_rectangular_index,
+                                                                      CASE
+                                                                          WHEN equivalent_rectangular_index IS NOT NULL
+                                                                             THEN percent_rank() OVER ( ORDER BY equivalent_rectangular_index )
+                                                                      END AS mean_equivalent_rectangular_index_pct_rnk,
                                                                       min_azimuth,
                                                                       median_azimuth,
                                                                       mean_azimuth,

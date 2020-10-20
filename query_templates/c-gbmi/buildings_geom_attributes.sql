@@ -89,6 +89,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes AS (
                                          calc_way_area * "height" AS est_volume,
                                          2.0 * sqrt(pi() * calc_way_area) / calc_perimeter AS compactness,
                                          calc_perimeter / sqrt(sqrt(calc_way_area)) AS complexity,
+                                         sqrt( calc_way_area / oriented_mbr_area ) * ( oriented_mbr_length / calc_perimeter ) AS equivalent_rectangular_index,
                                          year_of_construction,
                                          start_date
                                      FROM

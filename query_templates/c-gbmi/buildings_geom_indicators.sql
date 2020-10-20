@@ -52,6 +52,10 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators AS (
                                          CASE
                                              WHEN complexity IS NOT NULL THEN percent_rank() OVER (ORDER BY complexity)
                                          END AS complexity_pct_rnk,
+                                         equivalent_rectangular_index,
+                                         CASE
+                                             WHEN equivalent_rectangular_index IS NOT NULL THEN percent_rank() OVER (ORDER BY equivalent_rectangular_index)
+                                         END AS cequivalent_rectangular_index_pct_rnk,
                                          year_of_construction,
                                          CASE
                                              WHEN year_of_construction IS NOT NULL
