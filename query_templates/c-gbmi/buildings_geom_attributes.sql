@@ -64,7 +64,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes AS (
                                          bldg.tags,
                                          bldg.way,
                                          bldg.way_centroid,
-                                         calc_count_vertices AS count_vertices,
+                                         calc_count_vertices AS vertices_count,
                                          calc_way_area AS footprint_area,
                                          calc_perimeter AS perimeter,
                                          oriented_mbr,

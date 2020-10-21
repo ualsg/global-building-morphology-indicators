@@ -6,129 +6,123 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_admin_div2_{{raste
                                                                                          cell_country,
                                                                                          cell_admin_div1,
                                                                                          cell_admin_div2,
-                                                                                         count(osm_id) / aa.area_sqm AS count_buildings,
-                                                                                         min(clipped_bldg_area) / aa.area_sqm AS min_footprint_area,
-                                                                                             (percentile_cont(0.5) WITHIN GROUP ( ORDER BY clipped_bldg_area )) /
-                                                                                             aa.area_sqm AS median_footprint_area,
-                                                                                         avg(clipped_bldg_area) / aa.area_sqm AS mean_footprint_area,
-                                                                                         max(clipped_bldg_area) / aa.area_sqm AS max_footprint_area,
-                                                                                         sum(clipped_bldg_area) / aa.area_sqm AS sum_footprint_area,
-                                                                                         stddev_pop(clipped_bldg_area) / aa.area_sqm AS sd_footprint_area,
-                                                                                         min(clipped_bldg_perimeter) / aa.area_sqm AS min_perimeter,
-                                                                                             (percentile_cont(0.5) WITHIN GROUP ( ORDER BY clipped_bldg_perimeter )) /
-                                                                                             aa.area_sqm AS median_perimeter,
-                                                                                         avg(clipped_bldg_perimeter) / aa.area_sqm AS mean_perimeter,
-                                                                                         max(clipped_bldg_perimeter) / aa.area_sqm AS max_perimeter,
-                                                                                         sum(clipped_bldg_perimeter) / aa.area_sqm AS sum_perimeter,
-                                                                                         stddev_pop(clipped_bldg_perimeter) / aa.area_sqm AS sd_perimeter,
-                                                                                         min(height) / aa.area_sqm AS min_height,
-                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY height )) / aa.area_sqm AS median_height,
-                                                                                         avg(height) / aa.area_sqm AS mean_height,
-                                                                                         max(height) / aa.area_sqm AS max_height,
-                                                                                         sum(height) / aa.area_sqm AS sum_height,
-                                                                                         stddev_pop(height) / aa.area_sqm AS sd_height,
-                                                                                         min(est_volume) / aa.area_sqm AS min_volume,
-                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_volume )) / aa.area_sqm AS median_volume,
-                                                                                         avg(est_volume) / aa.area_sqm AS mean_volume,
-                                                                                         max(est_volume) / aa.area_sqm AS max_volume,
-                                                                                         sum(est_volume) / aa.area_sqm AS sum_volume,
-                                                                                         stddev_pop(est_volume) / aa.area_sqm AS sd_volume,
-                                                                                         min(est_wall_area) / aa.area_sqm AS min_wall_area,
-                                                                                             (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_wall_area )) /
-                                                                                             aa.area_sqm AS median_wall_area,
-                                                                                         avg(est_wall_area) / aa.area_sqm AS mean_wall_area,
-                                                                                         max(est_wall_area) / aa.area_sqm AS max_wall_area,
-                                                                                         sum(est_wall_area) / aa.area_sqm AS sum_wall_area,
-                                                                                         stddev_pop(est_wall_area) / aa.area_sqm AS sd_wall_area,
-                                                                                         min(est_envelope_area) / aa.area_sqm AS min_envelope_area,
-                                                                                             (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_envelope_area )) /
-                                                                                             aa.area_sqm AS median_envelope_area,
-                                                                                         avg(est_envelope_area) / aa.area_sqm AS mean_envelope_area,
-                                                                                         max(est_envelope_area) / aa.area_sqm AS max_envelope_area,
-                                                                                         sum(est_envelope_area) / aa.area_sqm AS sum_envelope_area,
-                                                                                         stddev_pop(est_envelope_area) / aa.area_sqm AS sd_envelope_area,
-                                                                                         min(est_floor_area) / aa.area_sqm AS min_floor_area,
-                                                                                             (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_floor_area )) /
-                                                                                             aa.area_sqm AS median_floor_area,
-                                                                                         avg(est_floor_area) / aa.area_sqm AS mean_floor_area,
-                                                                                         max(est_floor_area) / aa.area_sqm AS max_floor_area,
-                                                                                         sum(est_floor_area) / aa.area_sqm AS sum_floor_area,
-                                                                                         stddev_pop(est_floor_area) / aa.area_sqm AS sd_floor_area,
-                                                                                         min(count_vertices) / aa.area_sqm AS min_count_vertices,
-                                                                                             (percentile_cont(0.5) WITHIN GROUP ( ORDER BY count_vertices )) /
-                                                                                             aa.area_sqm AS median_count_vertices,
-                                                                                         avg(count_vertices) / aa.area_sqm AS mean_count_vertices,
-                                                                                         max(count_vertices) / aa.area_sqm AS max_count_vertices,
-                                                                                         sum(count_vertices) / aa.area_sqm AS sum_count_vertices,
-                                                                                         stddev_pop(count_vertices) / aa.area_sqm AS sd_count_vertices,
-                                                                                         min(complexity) AS min_complexity,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY complexity ) AS median_complexity,
-                                                                                         avg(complexity) AS mean_complexity,
-                                                                                         max(complexity) AS max_complexity,
-                                                                                         stddev_pop(complexity) AS sd_complexity,
-                                                                                         min(compactness) AS min_compactness,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY compactness ) AS median_compactness,
-                                                                                         avg(compactness) AS mean_compactness,
-                                                                                         max(compactness) AS max_compactness,
-                                                                                         stddev_pop(compactness) AS sd_compactness,
-                                                                                         min(equivalent_rectangular_index) AS min_equivalent_rectangular_index,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY equivalent_rectangular_index ) AS median_equivalent_rectangular_index,
-                                                                                         avg(equivalent_rectangular_index) AS mean_equivalent_rectangular_index,
-                                                                                         max(equivalent_rectangular_index) AS max_equivalent_rectangular_index,
-                                                                                         stddev_pop(equivalent_rectangular_index) AS sd_equivalent_rectangular_index,
-                                                                                         min(azimuth) AS min_azimuth,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY azimuth ) AS median_azimuth,
+                                                                                         count(DISTINCT osm_id) AS buildings_count,
+                                                                                         count(DISTINCT osm_id) / aa.agg_area AS buildings_count_normalised,
+                                                                                         min(clipped_bldg_area) AS footprint_area_min,
+                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY clipped_bldg_area )) AS footprint_area_median,
+                                                                                         avg(clipped_bldg_area) AS footprint_area_mean,
+                                                                                         max(clipped_bldg_area) AS footprint_area_max,
+                                                                                         sum(clipped_bldg_area) AS footprint_area_sum,
+                                                                                         sum(clipped_bldg_area) / aa.agg_area AS footprint_area_sum_normalised,
+                                                                                         stddev_pop(clipped_bldg_area) AS footprint_area_sd,
+                                                                                         min(clipped_bldg_perimeter) AS perimeter_min,
+                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY clipped_bldg_perimeter )) AS perimeter_median,
+                                                                                         avg(clipped_bldg_perimeter) AS perimeter_mean,
+                                                                                         max(clipped_bldg_perimeter) AS perimeter_max,
+                                                                                         sum(clipped_bldg_perimeter) AS perimeter_sum,
+                                                                                         sum(clipped_bldg_perimeter) / aa.agg_area AS perimeter_sum_normalised,
+                                                                                         stddev_pop(clipped_bldg_perimeter) AS perimeter_sd,
+                                                                                         min(height) AS height_min,
+                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY height )) AS height_median,
+                                                                                         avg(height) AS height_mean,
+                                                                                         max(height) AS height_max,
+                                                                                         stddev_pop(height) AS height_sd,
+                                                                                         min(est_volume) AS volume_min,
+                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_volume )) AS volume_median,
+                                                                                         avg(est_volume) AS volume_mean,
+                                                                                         max(est_volume) AS volume_max,
+                                                                                         sum(est_volume) AS volume_sum,
+                                                                                         sum(est_volume) / aa.agg_area AS volume_sum_normalised,
+                                                                                         stddev_pop(est_volume) AS volume_sd,
+                                                                                         min(est_wall_area) AS wall_area_min,
+                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_wall_area )) AS wall_area_median,
+                                                                                         avg(est_wall_area) AS wall_area_mean,
+                                                                                         max(est_wall_area) AS wall_area_max,
+                                                                                         sum(est_wall_area) AS wall_area_sum,
+                                                                                         sum(est_wall_area) / aa.agg_area AS wall_area_sum_normalised,
+                                                                                         stddev_pop(est_wall_area) AS wall_area_sd,
+                                                                                         min(est_envelope_area) AS envelope_area_min,
+                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_envelope_area )) AS envelope_area_median,
+                                                                                         avg(est_envelope_area) AS envelope_area_mean,
+                                                                                         max(est_envelope_area) AS envelope_area_max,
+                                                                                         sum(est_envelope_area) AS envelope_area_sum,
+                                                                                         sum(est_envelope_area) / aa.agg_area AS envelope_area_sum_normalised,
+                                                                                         stddev_pop(est_envelope_area) AS envelope_area_sd,
+                                                                                         min(vertices_count) AS vertices_count_min,
+                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY vertices_count )) AS vertices_count_median,
+                                                                                         avg(vertices_count) AS vertices_count_mean,
+                                                                                         max(vertices_count) AS vertices_count_max,
+                                                                                         sum(vertices_count) AS vertices_count_sum,
+                                                                                         sum(vertices_count) / aa.agg_area AS vertices_count_sum_normalised,
+                                                                                         stddev_pop(vertices_count) AS vertices_count_sd,
+                                                                                         min(complexity) AS complexity_min,
+                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY complexity ) AS complexity_median,
+                                                                                         avg(complexity) AS complexity_mean,
+                                                                                         max(complexity) AS complexity_max,
+                                                                                         stddev_pop(complexity) AS complexity_sd,
+                                                                                         min(compactness) AS compactness_min,
+                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY compactness ) AS compactness_median,
+                                                                                         avg(compactness) AS compactness_mean,
+                                                                                         max(compactness) AS compactness_max,
+                                                                                         stddev_pop(compactness) AS compactness_sd,
+                                                                                         min(equivalent_rectangular_index) AS equivalent_rectangular_index_min,
+                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY equivalent_rectangular_index ) AS equivalent_rectangular_index_median,
+                                                                                         avg(equivalent_rectangular_index) AS equivalent_rectangular_index_mean,
+                                                                                         max(equivalent_rectangular_index) AS equivalent_rectangular_index_max,
+                                                                                         stddev_pop(equivalent_rectangular_index) AS equivalent_rectangular_index_sd,
+                                                                                         min(azimuth) AS azimuth_min,
+                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY azimuth ) AS azimuth_median,
                                                                                          CASE
                                                                                              WHEN avg(azimuth) >= 90 AND avg(azimuth) < 180
                                                                                                  THEN avg(azimuth) + 180
                                                                                              WHEN avg(azimuth) >= 180 AND avg(azimuth) < 270
                                                                                                  THEN avg(azimuth) - 180
                                                                                              ELSE avg(azimuth)
-                                                                                         END AS mean_azimuth,
-                                                                                         max(azimuth) AS max_azimuth,
-                                                                                         stddev_pop(azimuth) AS sd_azimuth,
-                                                                                         min(oriented_mbr_length) AS min_mbr_length,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY oriented_mbr_length ) AS median_mbr_length,
-                                                                                         avg(oriented_mbr_length) AS mean_mbr_length,
-                                                                                         max(oriented_mbr_length) AS max_mbr_length,
-                                                                                         stddev_pop(oriented_mbr_length) AS sd_mbr_length,
-                                                                                         min(oriented_mbr_width) AS min_mbr_width,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY oriented_mbr_width ) AS median_mbr_width,
-                                                                                         avg(oriented_mbr_width) AS mean_mbr_width,
-                                                                                         max(oriented_mbr_width) AS max_mbr_width,
-                                                                                         stddev_pop(oriented_mbr_width) AS sd_mbr_width,
-                                                                                         min(oriented_mbr_area) AS min_mbr_area,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY oriented_mbr_area ) AS median_mbr_area,
-                                                                                         avg(oriented_mbr_area) AS mean_mbr_area,
-                                                                                         max(oriented_mbr_area) AS max_mbr_area,
-                                                                                         sum(oriented_mbr_area) AS sum_mbr_area,
-                                                                                         stddev_pop(oriented_mbr_area) AS sd_mbr_area,
-                                                                                         min("building:levels") AS "min_building:levels",
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY "building:levels" ) AS "median_building:levels",
-                                                                                         avg("building:levels") AS "mean_building:levels",
-                                                                                         max("building:levels") AS "max_building:levels",
-                                                                                         stddev_pop("building:levels") AS "sd_building:levels",
-                                                                                         count(is_residential) FILTER ( WHERE is_residential IS TRUE ) AS count_residential,
-                                                                                         min(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) / aa.area_sqm AS min_residential_floor_area,
-                                                                                             (percentile_cont(0.5)
-                                                                                              WITHIN GROUP ( ORDER BY est_floor_area )
-                                                                                              FILTER ( WHERE is_residential IS TRUE )) /
-                                                                                             aa.area_sqm AS median_residential_floor_area,
-                                                                                         avg(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) / aa.area_sqm AS mean_residential_floor_area,
-                                                                                         max(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) / aa.area_sqm AS max_residential_floor_area,
-                                                                                         sum(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) / aa.area_sqm AS sum_residential_floor_area,
-                                                                                             stddev_pop(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) /
-                                                                                             aa.area_sqm AS sd_residential_floor_area,
-                                                                                         min(year_of_construction) AS min_year_of_construction,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY year_of_construction ) AS median_year_of_construction,
-                                                                                         avg(year_of_construction) AS mean_year_of_construction,
-                                                                                         max(year_of_construction) AS max_year_of_construction,
-                                                                                         stddev_pop(year_of_construction) AS sd_year_of_construction,
-                                                                                         min(start_date) AS min_start_date,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY start_date ) AS median_start_date,
-                                                                                         avg(start_date) AS mean_start_date,
-                                                                                         max(start_date) AS max_start_date,
-                                                                                         stddev_pop(start_date) AS sd_start_date
+                                                                                         END AS azimuth_mean,
+                                                                                         max(azimuth) AS azimuth_max,
+                                                                                         stddev_pop(azimuth) AS azimuth_sd,
+                                                                                         min(oriented_mbr_length) AS mbr_length_min,
+                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY oriented_mbr_length ) AS mbr_length_median,
+                                                                                         avg(oriented_mbr_length) AS mbr_length_mean,
+                                                                                         max(oriented_mbr_length) AS mbr_length_max,
+                                                                                         stddev_pop(oriented_mbr_length) AS mbr_length_sd,
+                                                                                         min(oriented_mbr_width) AS mbr_width_min,
+                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY oriented_mbr_width ) AS mbr_width_median,
+                                                                                         avg(oriented_mbr_width) AS mbr_width_mean,
+                                                                                         max(oriented_mbr_width) AS mbr_width_max,
+                                                                                         stddev_pop(oriented_mbr_width) AS mbr_width_sd,
+                                                                                         min(oriented_mbr_area) AS mbr_area_min,
+                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY oriented_mbr_area ) AS mbr_area_median,
+                                                                                         avg(oriented_mbr_area) AS mbr_area_mean,
+                                                                                         max(oriented_mbr_area) AS mbr_area_max,
+                                                                                         sum(oriented_mbr_area) AS mbr_area_sum,
+                                                                                         stddev_pop(oriented_mbr_area) AS mbr_area_sd,
+                                                                                         min("building:levels") AS "building:levels_min",
+                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY "building:levels" ) AS "building:levels_median",
+                                                                                         avg("building:levels") AS "building:levels_mean",
+                                                                                         max("building:levels") AS "building:levels_max",
+                                                                                         stddev_pop("building:levels") AS "building:levels_sd",
+                                                                                         min(est_floor_area) AS floor_area_min,
+                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_floor_area )) AS floor_area_median,
+                                                                                         avg(est_floor_area) AS floor_area_mean,
+                                                                                         max(est_floor_area) AS floor_area_max,
+                                                                                         sum(est_floor_area) AS floor_area_sum,
+                                                                                         sum(est_floor_area) / aa.agg_area AS floor_area_sum_normalised,
+                                                                                         stddev_pop(est_floor_area) AS floor_area_sd,
+                                                                                         count(is_residential) FILTER ( WHERE is_residential IS TRUE ) AS residential_count,
+                                                                                         count(is_residential) / aa.agg_area AS residential_count_normalised,
+                                                                                         min(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_min,
+                                                                                         (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_floor_area ) FILTER ( WHERE is_residential IS TRUE )) AS residential_floor_area_median,
+                                                                                         avg(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_mean,
+                                                                                         max(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_max,
+                                                                                         sum(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_sum,
+                                                                                         sum(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) / aa.agg_area AS residential_floor_area_sum_normalised,
+                                                                                         stddev_pop(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_sd,
+                                                                                         min(year_of_construction) AS year_of_construction_min,
+                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY year_of_construction ) AS year_of_construction_median,
+                                                                                         avg(year_of_construction) AS year_of_construction_mean,
+                                                                                         max(year_of_construction) AS year_of_construction_max,
+                                                                                         stddev_pop(year_of_construction) AS year_of_construction_sd
                                                                                      FROM
                                                                                          {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} bga
                                                                                          LEFT JOIN {{db_schema}}.agg_gadm36_country_admin_level_areas aa
@@ -145,218 +139,232 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_admin_div2_{{raste
                                                                             cell_country,
                                                                             cell_admin_div1,
                                                                             cell_admin_div2,
-                                                                            count_buildings,
-                                                                            min_footprint_area,
-                                                                            median_footprint_area,
-                                                                            mean_footprint_area,
-                                                                            max_footprint_area,
-                                                                            sum_footprint_area,
-                                                                            sd_footprint_area,
-                                                                            (sd_footprint_area) ^ 2 / mean_footprint_area AS d_footprint_area,
+                                                                            buildings_count,
+                                                                            buildings_count_normalised,
+                                                                            footprint_area_min,
+                                                                            footprint_area_median,
+                                                                            footprint_area_mean,
+                                                                            footprint_area_max,
+                                                                            footprint_area_sum,
+                                                                            footprint_area_sum_normalised,
+                                                                            footprint_area_sd,
+                                                                            (footprint_area_sd) ^ 2 / footprint_area_mean AS footprint_area_d,
                                                                             CASE
-                                                                                WHEN mean_footprint_area IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_footprint_area )
-                                                                            END AS mean_footprint_area_pct_rnk,
-                                                                            min_perimeter,
-                                                                            median_perimeter,
-                                                                            mean_perimeter,
-                                                                            max_perimeter,
-                                                                            sum_perimeter,
-                                                                            sd_perimeter,
-                                                                            (sd_perimeter) ^ 2 / mean_perimeter AS d_perimeter,
+                                                                                WHEN footprint_area_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY footprint_area_mean )
+                                                                            END AS footprint_area_mean_pct_rnk,
+                                                                            perimeter_min,
+                                                                            perimeter_median,
+                                                                            perimeter_mean,
+                                                                            perimeter_max,
+                                                                            perimeter_sum,
+                                                                            perimeter_sum_normalised,
+                                                                            perimeter_sd,
+                                                                            (perimeter_sd) ^ 2 / perimeter_mean AS perimeter_d,
                                                                             CASE
-                                                                                WHEN mean_perimeter IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_perimeter )
-                                                                            END AS mean_perimeter_pct_rnk,
-                                                                            min_height,
-                                                                            median_height,
-                                                                            mean_height,
-                                                                            max_height,
-                                                                            sd_height,
-                                                                            CASE WHEN mean_height > 0 THEN (sd_height) ^ 2 / mean_height END AS d_height,
+                                                                                WHEN perimeter_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY perimeter_mean )
+                                                                            END AS perimeter_mean_pct_rnk,
+                                                                            height_min,
+                                                                            height_median,
+                                                                            height_mean,
+                                                                            height_max,
+                                                                            height_sd,
+                                                                            CASE WHEN height_mean > 0 THEN (height_sd) ^ 2 / height_mean END AS height_d,
                                                                             CASE
-                                                                                WHEN mean_height IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_height )
-                                                                            END AS mean_height_pct_rnk,
-                                                                            min_volume,
-                                                                            median_volume,
-                                                                            mean_volume,
-                                                                            max_volume,
-                                                                            sum_volume,
-                                                                            sd_volume,
-                                                                            CASE WHEN mean_volume > 0 THEN (sd_volume) ^ 2 / mean_volume END AS d_volume,
+                                                                                WHEN height_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY height_mean )
+                                                                            END AS height_mean_pct_rnk,
+                                                                            volume_min,
+                                                                            volume_median,
+                                                                            volume_mean,
+                                                                            volume_max,
+                                                                            volume_sum,
+                                                                            volume_sum_normalised,
+                                                                            volume_sd,
+                                                                            CASE WHEN volume_mean > 0 THEN (volume_sd) ^ 2 / volume_mean END AS volume_d,
                                                                             CASE
-                                                                                WHEN mean_volume IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_volume )
-                                                                            END AS mean_volume_pct_rnk,
-                                                                            min_wall_area,
-                                                                            median_wall_area,
-                                                                            mean_wall_area,
-                                                                            max_wall_area,
-                                                                            sum_wall_area,
-                                                                            sd_wall_area,
+                                                                                WHEN volume_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY volume_mean )
+                                                                            END AS volume_mean_pct_rnk,
+                                                                            wall_area_min,
+                                                                            wall_area_median,
+                                                                            wall_area_mean,
+                                                                            wall_area_max,
+                                                                            wall_area_sum,
+                                                                            wall_area_sum_normalised,
+                                                                            wall_area_sd,
                                                                             CASE
-                                                                                WHEN mean_wall_area > 0
-                                                                                    THEN (sd_wall_area) ^ 2 / mean_wall_area
+                                                                                WHEN wall_area_mean > 0
+                                                                                    THEN (wall_area_sd) ^ 2 / wall_area_mean
                                                                                 ELSE NULL
-                                                                            END AS d_wall_area,
+                                                                            END AS wall_area_d,
                                                                             CASE
-                                                                                WHEN mean_wall_area IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_wall_area )
-                                                                            END AS mean_wall_area_pct_rnk,
-                                                                            min_envelope_area,
-                                                                            median_envelope_area,
-                                                                            mean_envelope_area,
-                                                                            max_envelope_area,
-                                                                            sum_envelope_area,
-                                                                            sd_envelope_area,
+                                                                                WHEN wall_area_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY wall_area_mean )
+                                                                            END AS wall_area_mean_pct_rnk,
+                                                                            envelope_area_min,
+                                                                            envelope_area_median,
+                                                                            envelope_area_mean,
+                                                                            envelope_area_max,
+                                                                            envelope_area_sum,
+                                                                            envelope_area_sum_normalised,
+                                                                            envelope_area_sd,
                                                                             CASE
-                                                                                WHEN mean_envelope_area > 0
-                                                                                    THEN (sd_envelope_area) ^ 2 / mean_envelope_area
-                                                                            END AS d_envelope_area,
+                                                                                WHEN envelope_area_mean > 0
+                                                                                    THEN (envelope_area_sd) ^ 2 / envelope_area_mean
+                                                                            END AS envelope_area_d,
                                                                             CASE
-                                                                                WHEN mean_envelope_area IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_envelope_area )
-                                                                            END AS mean_envelope_area_pct_rnk,
-                                                                            min_floor_area,
-                                                                            median_floor_area,
-                                                                            mean_floor_area,
-                                                                            max_floor_area,
-                                                                            sum_floor_area,
-                                                                            sd_floor_area,
-                                                                            CASE WHEN mean_floor_area > 0 THEN (sd_floor_area) ^ 2 / mean_floor_area END AS d_floor_area,
+                                                                                WHEN envelope_area_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY envelope_area_mean )
+                                                                            END AS envelope_area_mean_pct_rnk,
+                                                                            vertices_count_min,
+                                                                            vertices_count_median,
+                                                                            vertices_count_mean,
+                                                                            vertices_count_max,
+                                                                            vertices_count_sum,
+                                                                            vertices_count_sum_normalised,
+                                                                            vertices_count_sd,
                                                                             CASE
-                                                                                WHEN mean_floor_area IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_floor_area )
-                                                                            END AS mean_floor_area_pct_rnk,
-                                                                            min_complexity,
-                                                                            median_complexity,
-                                                                            mean_complexity,
-                                                                            max_complexity,
-                                                                            sd_complexity,
-                                                                            CASE WHEN mean_complexity > 0 THEN (sd_complexity) ^ 2 / mean_complexity END AS d_complexity,
+                                                                                WHEN vertices_count_mean > 0
+                                                                                    THEN (vertices_count_sd) ^ 2 / vertices_count_mean
+                                                                            END AS vertices_count_d,
                                                                             CASE
-                                                                                WHEN mean_complexity IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_complexity )
-                                                                            END AS mean_complexity_pct_rnk,
-                                                                            min_compactness,
-                                                                            median_compactness,
-                                                                            mean_compactness,
-                                                                            max_compactness,
-                                                                            sd_compactness,
+                                                                                WHEN vertices_count_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY vertices_count_mean )
+                                                                            END AS vertices_count_mean_pct_rnk,
+                                                                            complexity_min,
+                                                                            complexity_median,
+                                                                            complexity_mean,
+                                                                            complexity_max,
+                                                                            complexity_sd,
+                                                                            CASE WHEN complexity_mean > 0 THEN (complexity_sd) ^ 2 / complexity_mean END AS complexity_d,
                                                                             CASE
-                                                                                WHEN mean_compactness > 0
-                                                                                    THEN (sd_compactness) ^ 2 / mean_compactness
-                                                                            END AS d_compactness,
+                                                                                WHEN complexity_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY complexity_mean )
+                                                                            END AS complexity_mean_pct_rnk,
+                                                                            compactness_min,
+                                                                            compactness_median,
+                                                                            compactness_mean,
+                                                                            compactness_max,
+                                                                            compactness_sd,
                                                                             CASE
-                                                                                WHEN mean_compactness IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_compactness )
-                                                                            END AS mean_compactness_pct_rnk,
-                                                                            min_equivalent_rectangular_index,
-                                                                            median_equivalent_rectangular_index,
-                                                                            mean_equivalent_rectangular_index,
-                                                                            max_equivalent_rectangular_index,
-                                                                            sd_equivalent_rectangular_index,
+                                                                                WHEN compactness_mean > 0
+                                                                                    THEN (compactness_sd) ^ 2 / compactness_mean
+                                                                            END AS compactness_d,
                                                                             CASE
-                                                                                WHEN mean_equivalent_rectangular_index > 0
-                                                                                    THEN (sd_equivalent_rectangular_index) ^ 2 / mean_equivalent_rectangular_index
-                                                                            END AS d_equivalent_rectangular_index,
+                                                                                WHEN compactness_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY compactness_mean )
+                                                                            END AS compactness_mean_pct_rnk,
+                                                                            equivalent_rectangular_index_min,
+                                                                            equivalent_rectangular_index_median,
+                                                                            equivalent_rectangular_index_mean,
+                                                                            equivalent_rectangular_index_max,
+                                                                            equivalent_rectangular_index_sd,
                                                                             CASE
-                                                                                WHEN equivalent_rectangular_index IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY equivalent_rectangular_index )
-                                                                            END AS mean_equivalent_rectangular_index_pct_rnk,
-                                                                            min_azimuth,
-                                                                            median_azimuth,
-                                                                            mean_azimuth,
-                                                                            max_azimuth,
-                                                                            sd_azimuth,
-                                                                            CASE WHEN mean_azimuth > 0 THEN (sd_azimuth) ^ 2 / mean_azimuth END AS d_azimuth,
+                                                                                WHEN equivalent_rectangular_index_mean > 0
+                                                                                    THEN (equivalent_rectangular_index_sd) ^ 2 / equivalent_rectangular_index_mean
+                                                                            END AS equivalent_rectangular_index_d,
                                                                             CASE
-                                                                                WHEN mean_azimuth IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_azimuth )
-                                                                            END AS mean_azimuth_pct_rnk,
-                                                                            min_mbr_length,
-                                                                            median_mbr_length,
-                                                                            mean_mbr_length,
-                                                                            max_mbr_length,
-                                                                            sd_mbr_length,
-                                                                            CASE WHEN mean_mbr_length > 0 THEN (sd_mbr_length) ^ 2 / mean_mbr_length END AS d_mbr_length,
+                                                                                WHEN equivalent_rectangular_index_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY equivalent_rectangular_index_mean )
+                                                                            END AS equivalent_rectangular_index_mean_pct_rnk,
+                                                                            azimuth_min,
+                                                                            azimuth_median,
+                                                                            azimuth_mean,
+                                                                            azimuth_max,
+                                                                            azimuth_sd,
+                                                                            CASE WHEN azimuth_mean > 0 THEN (azimuth_sd) ^ 2 / azimuth_mean END AS azimuth_d,
                                                                             CASE
-                                                                                WHEN mean_mbr_length IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_mbr_length )
-                                                                            END AS mean_mbr_length_pct_rnk,
-                                                                            min_mbr_width,
-                                                                            median_mbr_width,
-                                                                            mean_mbr_width,
-                                                                            max_mbr_width,
-                                                                            sd_mbr_width,
-                                                                            CASE WHEN mean_mbr_width > 0 THEN (sd_mbr_width) ^ 2 / mean_mbr_width END AS d_mbr_width,
+                                                                                WHEN azimuth_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY azimuth_mean )
+                                                                            END AS azimuth_mean_pct_rnk,
+                                                                            mbr_length_min,
+                                                                            mbr_length_median,
+                                                                            mbr_length_mean,
+                                                                            mbr_length_max,
+                                                                            mbr_length_sd,
+                                                                            CASE WHEN mbr_length_mean > 0 THEN (mbr_length_sd) ^ 2 / mbr_length_mean END AS mbr_length_d,
                                                                             CASE
-                                                                                WHEN mean_mbr_width IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_mbr_width )
-                                                                            END AS mean_mbr_width_pct_rnk,
-                                                                            min_mbr_area,
-                                                                            median_mbr_area,
-                                                                            mean_mbr_area,
-                                                                            max_mbr_area,
-                                                                            sum_mbr_area,
-                                                                            sd_mbr_area,
-                                                                            CASE WHEN mean_mbr_area > 0 THEN (sd_mbr_area) ^ 2 / mean_mbr_area END AS d_mbr_area,
+                                                                                WHEN mbr_length_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY mbr_length_mean )
+                                                                            END AS mbr_length_mean_pct_rnk,
+                                                                            mbr_width_min,
+                                                                            mbr_width_median,
+                                                                            mbr_width_mean,
+                                                                            mbr_width_max,
+                                                                            mbr_width_sd,
+                                                                            CASE WHEN mbr_width_mean > 0 THEN (mbr_width_sd) ^ 2 / mbr_width_mean END AS mbr_width_d,
                                                                             CASE
-                                                                                WHEN mean_mbr_area IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_mbr_area )
-                                                                            END AS mean_mbr_area_pct_rnk,
-                                                                            "min_building:levels",
-                                                                            "median_building:levels",
-                                                                            "mean_building:levels",
-                                                                            "max_building:levels",
-                                                                            "sd_building:levels",
+                                                                                WHEN mbr_width_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY mbr_width_mean )
+                                                                            END AS mbr_width_mean_pct_rnk,
+                                                                            mbr_area_min,
+                                                                            mbr_area_median,
+                                                                            mbr_area_mean,
+                                                                            mbr_area_max,
+                                                                            mbr_area_sum,
+                                                                            mbr_area_sd,
+                                                                            CASE WHEN mbr_area_mean > 0 THEN (mbr_area_sd) ^ 2 / mbr_area_mean END AS mbr_area_d,
                                                                             CASE
-                                                                                WHEN "mean_building:levels" > 0
-                                                                                    THEN ("sd_building:levels") ^ 2 / "mean_building:levels"
-                                                                            END AS "d_building:levels",
+                                                                                WHEN mbr_area_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY mbr_area_mean )
+                                                                            END AS mbr_area_mean_pct_rnk,
+                                                                            "building:levels_min",
+                                                                            "building:levels_median",
+                                                                            "building:levels_mean",
+                                                                            "building:levels_max",
+                                                                            "building:levels_sd",
                                                                             CASE
-                                                                                WHEN "mean_building:levels" IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY "mean_building:levels" )
-                                                                            END AS "mean_building:levels_pct_rnk",
-                                                                            count_residential,
-                                                                            min_residential_floor_area,
-                                                                            median_residential_floor_area,
-                                                                            mean_residential_floor_area,
-                                                                            max_residential_floor_area,
-                                                                            sum_residential_floor_area,
-                                                                            sd_residential_floor_area,
+                                                                                WHEN "building:levels_mean" > 0
+                                                                                    THEN ("building:levels_sd") ^ 2 / "building:levels_mean"
+                                                                            END AS "building:levels_d",
                                                                             CASE
-                                                                                WHEN mean_residential_floor_area > 0
-                                                                                    THEN (sd_residential_floor_area) ^ 2 / mean_residential_floor_area
-                                                                            END AS d_residential_floor_area,
+                                                                                WHEN "building:levels_mean" IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY "building:levels_mean" )
+                                                                            END AS "building:levels_mean_pct_rnk",
+                                                                            floor_area_min,
+                                                                            floor_area_median,
+                                                                            floor_area_mean,
+                                                                            floor_area_max,
+                                                                            floor_area_sum,
+                                                                            floor_area_sum_normalised,
+                                                                            floor_area_sd,
+                                                                            CASE WHEN floor_area_mean > 0 THEN (floor_area_sd) ^ 2 / floor_area_mean END AS floor_area_d,
                                                                             CASE
-                                                                                WHEN mean_residential_floor_area IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_residential_floor_area )
-                                                                            END AS mean_residential_floor_area_pct_rnk,
-                                                                            min_year_of_construction,
-                                                                            median_year_of_construction,
-                                                                            mean_year_of_construction,
-                                                                            max_year_of_construction,
-                                                                            sd_year_of_construction,
+                                                                                WHEN floor_area_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY floor_area_mean )
+                                                                            END AS floor_area_mean_pct_rnk,
+                                                                            residential_count,
+                                                                            residential_count_normalised,
+                                                                            residential_floor_area_min,
+                                                                            residential_floor_area_median,
+                                                                            residential_floor_area_mean,
+                                                                            residential_floor_area_max,
+                                                                            residential_floor_area_sum,
+                                                                            residential_floor_area_sum_normalised,
+                                                                            residential_floor_area_sd,
                                                                             CASE
-                                                                                WHEN mean_year_of_construction > 0
-                                                                                    THEN (sd_year_of_construction) ^ 2 / mean_year_of_construction
-                                                                            END AS d_year_of_construction,
+                                                                                WHEN residential_floor_area_mean > 0
+                                                                                    THEN (residential_floor_area_sd) ^ 2 / residential_floor_area_mean
+                                                                            END AS residential_floor_area_d,
                                                                             CASE
-                                                                                WHEN mean_year_of_construction IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_year_of_construction )
-                                                                            END AS mean_year_of_construction_pct_rnk,
-                                                                            min_start_date,
-                                                                            median_start_date,
-                                                                            mean_start_date,
-                                                                            max_start_date,
-                                                                            sd_start_date,
-                                                                            CASE WHEN mean_start_date > 0 THEN (sd_start_date) ^ 2 / mean_start_date END AS d_start_date,
+                                                                                WHEN residential_floor_area_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY residential_floor_area_mean )
+                                                                            END AS residential_floor_area_mean_pct_rnk,
+                                                                            year_of_construction_min,
+                                                                            year_of_construction_median,
+                                                                            year_of_construction_mean,
+                                                                            year_of_construction_max,
+                                                                            year_of_construction_sd,
                                                                             CASE
-                                                                                WHEN mean_start_date IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY mean_start_date )
-                                                                            END AS mean_start_date_pct_rnk
+                                                                                WHEN year_of_construction_mean > 0
+                                                                                    THEN (year_of_construction_sd) ^ 2 / year_of_construction_mean
+                                                                            END AS year_of_construction_d,
+                                                                            CASE
+                                                                                WHEN year_of_construction_mean IS NOT NULL
+                                                                                    THEN percent_rank() OVER ( ORDER BY year_of_construction_mean )
+                                                                            END AS year_of_construction_mean_pct_rnk
                                                                         FROM
                                                                             agg1
                                                                         ORDER BY

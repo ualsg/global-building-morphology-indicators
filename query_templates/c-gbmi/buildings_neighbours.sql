@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_neighbors CASCADE;
+DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_neighbours CASCADE;
 
-CREATE TABLE {{gbmi_schema}}.buildings_neighbors AS (
+CREATE TABLE {{gbmi_schema}}.buildings_neighbours AS (
                                     SELECT
                                         bldg1.osm_id AS osm_id1,
                                         bldg2.osm_id AS osm_id2,
