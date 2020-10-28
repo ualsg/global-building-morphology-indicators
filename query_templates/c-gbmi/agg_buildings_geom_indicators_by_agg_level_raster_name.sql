@@ -1,26 +1,25 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.agg_buildings_geom_indicators_by_admin_div2_{{raster_name}};
+DROP TABLE IF EXISTS {{gbmi_schema}}.agg_buildings_geom_indicators_by_{{agg_level}}_{{raster_name}};
 
-CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_admin_div2_{{raster_name}} AS (
-                                                                        WITH agg1 AS (
+CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_{{agg_level}}_{{raster_name}} AS (
+                                                                        WITH agg0 AS (
                                                                                      SELECT
-                                                                                         cell_country,
-                                                                                         cell_admin_div1,
-                                                                                         cell_admin_div2,
+                                                                                         {{agg_columns}},
+                                                                                         {{agg_geom}},
                                                                                          count(DISTINCT osm_id) AS buildings_count,
-                                                                                         count(DISTINCT osm_id) / aa.agg_area AS buildings_count_normalised,
+                                                                                         count(DISTINCT osm_id) / {{agg_area}} AS buildings_count_normalised,
                                                                                          min(clipped_bldg_area) AS footprint_area_min,
                                                                                          (percentile_cont(0.5) WITHIN GROUP ( ORDER BY clipped_bldg_area )) AS footprint_area_median,
                                                                                          avg(clipped_bldg_area) AS footprint_area_mean,
                                                                                          max(clipped_bldg_area) AS footprint_area_max,
                                                                                          sum(clipped_bldg_area) AS footprint_area_sum,
-                                                                                         sum(clipped_bldg_area) / aa.agg_area AS footprint_area_sum_normalised,
+                                                                                         sum(clipped_bldg_area) / {{agg_area}} AS footprint_area_sum_normalised,
                                                                                          stddev_pop(clipped_bldg_area) AS footprint_area_sd,
                                                                                          min(clipped_bldg_perimeter) AS perimeter_min,
                                                                                          (percentile_cont(0.5) WITHIN GROUP ( ORDER BY clipped_bldg_perimeter )) AS perimeter_median,
                                                                                          avg(clipped_bldg_perimeter) AS perimeter_mean,
                                                                                          max(clipped_bldg_perimeter) AS perimeter_max,
                                                                                          sum(clipped_bldg_perimeter) AS perimeter_sum,
-                                                                                         sum(clipped_bldg_perimeter) / aa.agg_area AS perimeter_sum_normalised,
+                                                                                         sum(clipped_bldg_perimeter) / {{agg_area}} AS perimeter_sum_normalised,
                                                                                          stddev_pop(clipped_bldg_perimeter) AS perimeter_sd,
                                                                                          min(height) AS height_min,
                                                                                          (percentile_cont(0.5) WITHIN GROUP ( ORDER BY height )) AS height_median,
@@ -32,28 +31,28 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_admin_div2_{{raste
                                                                                          avg(est_volume) AS volume_mean,
                                                                                          max(est_volume) AS volume_max,
                                                                                          sum(est_volume) AS volume_sum,
-                                                                                         sum(est_volume) / aa.agg_area AS volume_sum_normalised,
+                                                                                         sum(est_volume) / {{agg_area}} AS volume_sum_normalised,
                                                                                          stddev_pop(est_volume) AS volume_sd,
                                                                                          min(est_wall_area) AS wall_area_min,
                                                                                          (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_wall_area )) AS wall_area_median,
                                                                                          avg(est_wall_area) AS wall_area_mean,
                                                                                          max(est_wall_area) AS wall_area_max,
                                                                                          sum(est_wall_area) AS wall_area_sum,
-                                                                                         sum(est_wall_area) / aa.agg_area AS wall_area_sum_normalised,
+                                                                                         sum(est_wall_area) / {{agg_area}} AS wall_area_sum_normalised,
                                                                                          stddev_pop(est_wall_area) AS wall_area_sd,
                                                                                          min(est_envelope_area) AS envelope_area_min,
                                                                                          (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_envelope_area )) AS envelope_area_median,
                                                                                          avg(est_envelope_area) AS envelope_area_mean,
                                                                                          max(est_envelope_area) AS envelope_area_max,
                                                                                          sum(est_envelope_area) AS envelope_area_sum,
-                                                                                         sum(est_envelope_area) / aa.agg_area AS envelope_area_sum_normalised,
+                                                                                         sum(est_envelope_area) / {{agg_area}} AS envelope_area_sum_normalised,
                                                                                          stddev_pop(est_envelope_area) AS envelope_area_sd,
                                                                                          min(vertices_count) AS vertices_count_min,
                                                                                          (percentile_cont(0.5) WITHIN GROUP ( ORDER BY vertices_count )) AS vertices_count_median,
                                                                                          avg(vertices_count) AS vertices_count_mean,
                                                                                          max(vertices_count) AS vertices_count_max,
                                                                                          sum(vertices_count) AS vertices_count_sum,
-                                                                                         sum(vertices_count) / aa.agg_area AS vertices_count_sum_normalised,
+                                                                                         sum(vertices_count) / {{agg_area}} AS vertices_count_sum_normalised,
                                                                                          stddev_pop(vertices_count) AS vertices_count_sd,
                                                                                          min(complexity) AS complexity_min,
                                                                                          percentile_cont(0.5) WITHIN GROUP ( ORDER BY complexity ) AS complexity_median,
@@ -107,16 +106,16 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_admin_div2_{{raste
                                                                                          avg(est_floor_area) AS floor_area_mean,
                                                                                          max(est_floor_area) AS floor_area_max,
                                                                                          sum(est_floor_area) AS floor_area_sum,
-                                                                                         sum(est_floor_area) / aa.agg_area AS floor_area_sum_normalised,
+                                                                                         sum(est_floor_area) / {{agg_area}} AS floor_area_sum_normalised,
                                                                                          stddev_pop(est_floor_area) AS floor_area_sd,
                                                                                          count(is_residential) FILTER ( WHERE is_residential IS TRUE ) AS residential_count,
-                                                                                         count(is_residential) / aa.agg_area AS residential_count_normalised,
+                                                                                         count(is_residential) / {{agg_area}} AS residential_count_normalised,
                                                                                          min(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_min,
                                                                                          (percentile_cont(0.5) WITHIN GROUP ( ORDER BY est_floor_area ) FILTER ( WHERE is_residential IS TRUE )) AS residential_floor_area_median,
                                                                                          avg(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_mean,
                                                                                          max(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_max,
                                                                                          sum(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_sum,
-                                                                                         sum(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) / aa.agg_area AS residential_floor_area_sum_normalised,
+                                                                                         sum(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) / {{agg_area}} AS residential_floor_area_sum_normalised,
                                                                                          stddev_pop(est_floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_sd,
                                                                                          min(year_of_construction) AS year_of_construction_min,
                                                                                          percentile_cont(0.5) WITHIN GROUP ( ORDER BY year_of_construction ) AS year_of_construction_median,
@@ -124,21 +123,15 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_admin_div2_{{raste
                                                                                          max(year_of_construction) AS year_of_construction_max,
                                                                                          stddev_pop(year_of_construction) AS year_of_construction_sd
                                                                                      FROM
-                                                                                         {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} bga
-                                                                                         LEFT JOIN {{db_schema}}.agg_gadm36_country_admin_level_areas aa
-                                                                                         ON bga.cell_country = aa.country AND
-                                                                                            bga.cell_admin_div1 = aa.admin_level1 AND
-                                                                                            bga.cell_admin_div2 = aa.admin_level2
+                                                                                         {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} bga {{join_clause}}
                                                                                      GROUP BY
-                                                                                         bga.cell_country,
-                                                                                         cell_admin_div1,
-                                                                                         cell_admin_div2,
-                                                                                         aa.area_sqm
+                                                                                         {{agg_columns}},
+                                                                                         {{agg_geom}},
+                                                                                         {{agg_area}}
                                                                                      )
                                                                         SELECT
-                                                                            cell_country,
-                                                                            cell_admin_div1,
-                                                                            cell_admin_div2,
+                                                                            {{agg_columns}},
+                                                                            {{agg_geom}},
                                                                             buildings_count,
                                                                             buildings_count_normalised,
                                                                             footprint_area_min,
@@ -366,9 +359,6 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_admin_div2_{{raste
                                                                                     THEN percent_rank() OVER ( ORDER BY year_of_construction_mean )
                                                                             END AS year_of_construction_mean_pct_rnk
                                                                         FROM
-                                                                            agg1
-                                                                        ORDER BY
-                                                                            cell_country,
-                                                                            cell_admin_div1,
-                                                                            cell_admin_div2
+                                                                            agg0
+                                                                        ORDER BY {{order_columns}}
                                                                         );

@@ -57,7 +57,8 @@ CREATE TABLE {{gbmi_schema}}.buildings AS (
                               tags -> 'osm_version' AS osm_version
                           FROM
                               {{db_schema}}.planet_osm_polygon pop
-                          WHERE building IS NOT NULL AND lower(building) NOT IN ('no', 'not', 'non', 'none')
+                          WHERE building IS NOT NULL AND lower(building)
+                              IN ('yes', 'house', 'residential', 'garage', 'apartments', 'detached', 'hut', 'industrial', 'shed', 'roof', 'commercial', 'terrace')
                           );
 
 

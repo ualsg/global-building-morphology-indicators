@@ -30,6 +30,13 @@ class ConfigKeys:
     buffers = "buffers"
     buffer = "buffer"
     overwrite = "overwrite"
+    agg_levels = "agg_levels"
+    agg_level = "agg_level"
+    agg_columns = "agg_columns"
+    agg_geom = "agg_geom"
+    agg_area = "agg_area"
+    join_clause = "join_clause"
+    order_columns = "order_columns"
 
 
 class QueryGeneratorConfiguration:
@@ -149,9 +156,24 @@ class QueryGeneratorConfiguration:
                                     },
                                     "required": [ConfigKeys.buffer]
                                 }
+                            },
+                            ConfigKeys.agg_levels: {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        ConfigKeys.agg_level: {"type": "string"},
+                                        ConfigKeys.agg_columns: {"type": "string"},
+                                        ConfigKeys.agg_geom: {"type": "string"},
+                                        ConfigKeys.agg_area: {"type": "string"},
+                                        ConfigKeys.join_clause: {"type": "string"},
+                                        ConfigKeys.order_columns: {"type": "string"}
+                                    },
+                                    "required": [ConfigKeys.agg_level, ConfigKeys.agg_columns, ConfigKeys.agg_geom, ConfigKeys.agg_area, ConfigKeys.join_clause, ConfigKeys.order_columns]
+                                }
                             }
                         },
-                        "required": [ConfigKeys.db_schema, ConfigKeys.gbmi_schema, ConfigKeys.raster_names, ConfigKeys.buffers]
+                        "required": [ConfigKeys.db_schema, ConfigKeys.gbmi_schema, ConfigKeys.raster_names, ConfigKeys.buffers, ConfigKeys.agg_levels]
                     }
                 },
                 "required": [
