@@ -11,6 +11,6 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours AS (
                                                                     SELECT osm_id, way_centroid
                                                                     FROM {{gbmi_schema}}.buildings
                                                                     ) AS bldg2
-                                    WHERE st_dwithin(bldg1.way_centroid, bldg2.way_centroid, 250)
+                                    WHERE st_dwithin(bldg1.way_centroid, bldg2.way_centroid, 100)
                                     ORDER BY osm_id1, osm_id2, st_distance(bldg1.way_centroid, bldg2.way_centroid)
                                     );
