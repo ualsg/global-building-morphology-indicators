@@ -75,13 +75,13 @@
       ],
       "buffers": [
         {
+          "buffer": 25
+        },
+        {
+          "buffer": 50
+        },
+        {
           "buffer": 100
-        },
-        {
-          "buffer": 200
-        },
-        {
-          "buffer": 250
         }
       ],
       "agg_levels": [
@@ -96,24 +96,24 @@
         {
           "agg_level": "admin_div2",
           "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2",
-          "agg_geom": "agga.agg_geom_admin_div2",
-          "agg_area": "agga.agg_area_admin_div2",
+          "agg_geom": "agg_geom_admin_div2",
+          "agg_area": "agg_area_admin_div2",
           "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div2 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1 AND bga.cell_admin_div2 = agga.admin_div2",
           "order_columns": "cell_country, cell_admin_div1, cell_admin_div2"
         },
         {
           "agg_level": "admin_div1",
           "agg_columns": "cell_country, cell_admin_div1",
-          "agg_geom": "agga.agg_geom_admin_div1",
-          "agg_area": "agga.agg_area_admin_div1",
+          "agg_geom": "agg_geom_admin_div1",
+          "agg_area": "agg_area_admin_div1",
           "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div1 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1",
           "order_columns": "cell_country, cell_admin_div1"
         },
         {
           "agg_level": "country",
           "agg_columns": "cell_country",
-          "agg_geom": "agga.agg_geom_country",
-          "agg_area": "agga.agg_area_country",
+          "agg_geom": "agg_geom_country",
+          "agg_area": "agg_area_country",
           "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_country agga ON bga.cell_country = agga.country",
           "order_columns": "cell_country"
         }

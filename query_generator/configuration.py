@@ -31,6 +31,7 @@ class ConfigKeys:
     buffer = "buffer"
     overwrite = "overwrite"
     agg_levels = "agg_levels"
+    source_table = "source_table"
     agg_level = "agg_level"
     agg_columns = "agg_columns"
     agg_geom = "agg_geom"
@@ -123,6 +124,20 @@ class QueryGeneratorConfiguration:
                                         ConfigKeys.raster_target_table: {"type": "string"}
                                     },
                                     "required": [ConfigKeys.raster_name, ConfigKeys.raster_source_file, ConfigKeys.raster_target_table]
+                                }
+                            },
+                            ConfigKeys.agg_levels: {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        ConfigKeys.source_table: {"type": "string"},
+                                        ConfigKeys.agg_level: {"type": "string"},
+                                        ConfigKeys.agg_geom: {"type": "string"},
+                                        ConfigKeys.agg_columns: {"type": "string"},
+                                        ConfigKeys.order_columns: {"type": "string"}
+                                    },
+                                    "required": [ConfigKeys.source_table, ConfigKeys.agg_level, ConfigKeys.agg_geom, ConfigKeys.agg_columns, ConfigKeys.order_columns]
                                 }
                             }
                         },
