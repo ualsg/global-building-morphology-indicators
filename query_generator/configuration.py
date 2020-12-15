@@ -14,6 +14,7 @@ class ConfigKeys:
     db_name = "db_name"
     db_schema = "db_schema"
     gbmi_schema = "gbmi_schema"
+    misc_schema = "misc_schema"
     new_users = "new_users"
     new_user = "new_user"
     password = "password"
@@ -23,6 +24,7 @@ class ConfigKeys:
     gadm_target_table = "gadm_target_table"
     rasters = "rasters"
     raster_name = "raster_name"
+    raster_population = "raster_population"
     raster_source_file = "raster_source_file"
     raster_target_table = "raster_target_table"
     c_gbmi = "c-gbmi"
@@ -121,7 +123,8 @@ class QueryGeneratorConfiguration:
                                     "properties": {
                                         ConfigKeys.raster_name: {"type": "string"},
                                         ConfigKeys.raster_source_file: {"type": "string"},
-                                        ConfigKeys.raster_target_table: {"type": "string"}
+                                        ConfigKeys.raster_target_table: {"type": "string"},
+                                        ConfigKeys.raster_population: {"type": "string"}
                                     },
                                     "required": [ConfigKeys.raster_name, ConfigKeys.raster_source_file, ConfigKeys.raster_target_table]
                                 }
@@ -152,12 +155,16 @@ class QueryGeneratorConfiguration:
                             ConfigKeys.gbmi_schema: {
                                 "type": "string"
                             },
+                            ConfigKeys.misc_schema: {
+                                "type": "string"
+                            },
                             ConfigKeys.raster_names: {
                                 "type": "array",
                                 "items": {
                                     "type": "object",
                                     "properties": {
-                                        ConfigKeys.raster_name: {"type": "string"}
+                                        ConfigKeys.raster_name: {"type": "string"},
+                                        ConfigKeys.raster_population: {"type": "string"}
                                     },
                                     "required": [ConfigKeys.raster_name]
                                 },
@@ -188,7 +195,7 @@ class QueryGeneratorConfiguration:
                                 }
                             }
                         },
-                        "required": [ConfigKeys.db_schema, ConfigKeys.gbmi_schema, ConfigKeys.raster_names, ConfigKeys.buffers, ConfigKeys.agg_levels]
+                        "required": [ConfigKeys.db_schema, ConfigKeys.gbmi_schema, ConfigKeys.misc_schema, ConfigKeys.raster_names, ConfigKeys.buffers, ConfigKeys.agg_levels]
                     }
                 },
                 "required": [

@@ -13,8 +13,8 @@ CREATE TABLE {{db_schema}}.cells_{{raster_name}} AS (
                               cc.country AS country,
                               cc.country_official_name AS country_official_name,
                               cc.country_code2 AS country_code2,
-                              cc.country_code3 AS country_code3,
-                              raster.val AS raster_population,
+                              cc.country_code3 AS country_code3,{% if raster_population  %}
+                              raster.val AS {{raster_population}},{% endif %}
                               raster.geom AS raster_geom
                           FROM
                               {{db_schema}}.raster_polygons_{{raster_name}} AS raster
@@ -29,8 +29,8 @@ CREATE TABLE {{db_schema}}.cells_{{raster_name}} AS (
                               country,
                               country_official_name,
                               country_code2,
-                              country_code3,
-                              raster_population,
+                              country_code3,{% if raster_population  %}
+                              {{raster_population}},{% endif %}
                               raster_geom
                           );
 

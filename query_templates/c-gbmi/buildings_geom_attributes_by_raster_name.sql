@@ -12,8 +12,8 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                                     cells.country AS cell_country,
                                                     cells.country_official_name AS cell_country_official_name,
                                                     cells.country_code2 AS cell_country_code2,
-                                                    cells.country_code3 AS cell_country_code3,
-                                                    cells.population AS cell_population,
+                                                    cells.country_code3 AS cell_country_code3,{% if raster_population  %}
+                                                    cells.{{raster_population}} AS cell_population,{% endif %}
                                                     cells.centroid_geom AS cell_centroid,
                                                     cells.raster_geom AS cell_geom,
                                                     (ST_DUMP(ST_INTERSECTION(cells.raster_geom, bga.way))).geom AS clipped_way

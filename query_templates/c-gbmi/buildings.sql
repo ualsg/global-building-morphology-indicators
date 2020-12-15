@@ -58,10 +58,14 @@ CREATE TABLE {{gbmi_schema}}.buildings AS (
                           FROM
                               {{db_schema}}.planet_osm_polygon pop
                           WHERE building IS NOT NULL AND lower(building)
-                              IN ('yes', 'house', 'residential', 'garage', 'apartments', 'detached', 'hut', 'industrial', 'shed', 'roof', 'commercial', 'terrace')
+                              IN (SELECT value AS building FROM {{misc_schema}}.osm_polygon_attr_freqs WHERE attr = 'building' AND value IS NOT NULL LIMIT 12)
                           );
 
 
 CREATE INDEX buildings_gidx ON {{gbmi_schema}}.buildings USING gist(way);
+
+
+CREATE INDEX buildings_centroid_gidx ON {{gbmi_schema}}.buildings USING gist(way_centroid);
+
 
 VACUUM ANALYZE {{gbmi_schema}}.buildings;

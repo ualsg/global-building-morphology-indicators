@@ -30,7 +30,8 @@
         {
           "raster_name": "worldpop2020",
           "raster_source_file": "/data/worldpop/ppp_2020_1km_aggregated.tif",
-          "raster_target_table": "raw_tiles_worldpop2020"
+          "raster_target_table": "raw_tiles_worldpop2020",
+          "raster_population": "raster_population"
         },
         {
           "raster_name": "guf",
@@ -65,12 +66,14 @@
     "c-gbmi": {
       "db_schema": "public",
       "gbmi_schema": "gbmi",
+      "misc_schema": "misc",
       "raster_names": [
         {
           "raster_name": "guf"
         },
         {
-          "raster_name": "worldpop2020"
+          "raster_name": "worldpop2020",
+          "raster_population": "raster_population"
         }
       ],
       "buffers": [
