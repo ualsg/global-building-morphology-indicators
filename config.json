@@ -73,7 +73,7 @@
         },
         {
           "raster_name": "worldpop2020",
-          "raster_population": "raster_population"
+          "raster_population": "cell_population"
         }
       ],
       "buffers": [

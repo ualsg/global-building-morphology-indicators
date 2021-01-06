@@ -10,18 +10,18 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} AS (
                                                     cells.cell_area AS cell_area,
                                                     cells.country AS cell_country,
                                                     cells.admin_div1 AS cell_admin_div1,
-                                                    cells.admin_div2 AS cell_admin_div2,{% if raster_population %}
+                                                    cells.admin_div2 AS cell_admin_div2,
                                                     cells.admin_div3 AS cell_admin_div3,
                                                     cells.admin_div4 AS cell_admin_div4,
-                                                    cells.admin_div5 AS cell_admin_div5,
+                                                    cells.admin_div5 AS cell_admin_div5,{% if raster_population %}
                                                     cells.{{raster_population}} AS cell_population,{% endif %}
                                                     cells.country_official_name AS cell_country_official_name,
                                                     cells.country_code2 AS cell_country_code2,
                                                     cells.country_code3 AS cell_country_code3,
-                                                    (ST_DUMP(ST_INTERSECTION(cells.raster_geom, bgi.way))).geom AS clipped_way
+                                                    (ST_DUMP(ST_INTERSECTION(cells.cell_geom, bgi.way))).geom AS clipped_way
                                                  FROM
                                                     {{db_schema}}.cells_{{raster_name}} AS cells
-                                                    INNER JOIN {{gbmi_schema}}.buildings_geom_indicators bgi ON ST_INTERSECTS(cells.raster_geom, bgi.way)
+                                                    INNER JOIN {{gbmi_schema}}.buildings_geom_indicators bgi ON ST_INTERSECTS(cells.cell_geom, bgi.way)
                                                  )
                                  SELECT *,
                                      ST_AREA(clipped_way::geography) AS clipped_bldg_area,
