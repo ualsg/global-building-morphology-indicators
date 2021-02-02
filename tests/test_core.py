@@ -136,19 +136,39 @@ class TestQueryParamsExpander(BaseTestQueryGenerator):
             "db_schema": "db_schema",
             "gbmi_schema": "gbmi_schema",
             "raster_names": [{"raster_name": "raster1"}, {"raster_name": "raster2"}],
-            "buffers": [{"buffer": 10}, {"buffer": 20}]
+            "buffers": [{"buffer": 10}, {"buffer": 20}],
+            "agg_levels": [{"agg_level": "a", "agg_columns": "b, c, d", "agg_geom": "agga.abc", "agg_area": "agga.xyz", "join_clause": "", "order_columns": "d, c, a"},
+                           {"agg_level": "x", "agg_columns": "x, y, z", "agg_geom": "agga.xyz", "agg_area": "agga.abc", "join_clause": "test.test on tt.a = b.a", "order_columns": "d, c, b"}]
         }
         self.c_params_empty_buffers = {
             "db_schema": "db_schema",
             "gbmi_schema": "gbmi_schema",
             "raster_names": [{"raster_name": "raster1"}, {"raster_name": "raster2"}],
-            "buffers": []
+            "buffers": [],
+            "agg_levels": [{"agg_level": "a", "agg_columns": "b, c, d", "agg_geom": "agga.abc", "agg_area": "agga.xyz",
+                            "join_clause": "", "order_columns": "d, c, a"},
+                           {"agg_level": "x", "agg_columns": "x, y, z", "agg_geom": "agga.xyz", "agg_area": "agga.abc",
+                            "join_clause": "test.test on tt.a = b.a", "order_columns": "d, c, b"}]
+
         }
         self.c_params_empty_rasters = {
             "db_schema": "db_schema",
             "gbmi_schema": "gbmi_schema",
             "raster_names": [],
-            "buffers": [{"buffer": 10}, {"buffer": 20}]
+            "buffers": [{"buffer": 10}, {"buffer": 20}],
+            "agg_levels": [{"agg_level": "a", "agg_columns": "b, c, d", "agg_geom": "agga.abc", "agg_area": "agga.xyz",
+                            "join_clause": "", "order_columns": "d, c, a"},
+                           {"agg_level": "x", "agg_columns": "x, y, z", "agg_geom": "agga.xyz", "agg_area": "agga.abc",
+                            "join_clause": "test.test on tt.a = b.a", "order_columns": "d, c, b"}]
+
+        }
+        self.c_params_empty_agg_labels = {
+            "db_schema": "db_schema",
+            "gbmi_schema": "gbmi_schema",
+            "raster_names": [{"raster_name": "raster1"}, {"raster_name": "raster2"}],
+            "buffers": [{"buffer": 10}, {"buffer": 20}],
+            "agg_levels": []
+
         }
         self.c_params_empty_both = {
             "db_schema": "db_schema",
@@ -197,7 +217,7 @@ class TestQueryParamsExpander(BaseTestQueryGenerator):
 
     def test_c(self):
         actual = QueryParamsExpander(self.c_key, self.c_params).run()
-        expected = [{'raster_name': 'raster1', 'buffer': 10, 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}, {'raster_name': 'raster1', 'buffer': 20, 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}, {'raster_name': 'raster2', 'buffer': 10, 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}, {'raster_name': 'raster2', 'buffer': 20, 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}]
+        expected = [{'raster_name': 'raster1', 'buffer': 10, 'agg_level': 'a', 'agg_columns': 'b, c, d', 'agg_geom': 'agga.abc', 'agg_area': 'agga.xyz', 'join_clause': '', 'order_columns': 'd, c, a', 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}, {'raster_name': 'raster1', 'buffer': 10, 'agg_level': 'x', 'agg_columns': 'x, y, z', 'agg_geom': 'agga.xyz', 'agg_area': 'agga.abc', 'join_clause': 'test.test on tt.a = b.a', 'order_columns': 'd, c, b', 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}, {'raster_name': 'raster1', 'buffer': 20, 'agg_level': 'a', 'agg_columns': 'b, c, d', 'agg_geom': 'agga.abc', 'agg_area': 'agga.xyz', 'join_clause': '', 'order_columns': 'd, c, a', 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}, {'raster_name': 'raster1', 'buffer': 20, 'agg_level': 'x', 'agg_columns': 'x, y, z', 'agg_geom': 'agga.xyz', 'agg_area': 'agga.abc', 'join_clause': 'test.test on tt.a = b.a', 'order_columns': 'd, c, b', 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}, {'raster_name': 'raster2', 'buffer': 10, 'agg_level': 'a', 'agg_columns': 'b, c, d', 'agg_geom': 'agga.abc', 'agg_area': 'agga.xyz', 'join_clause': '', 'order_columns': 'd, c, a', 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}, {'raster_name': 'raster2', 'buffer': 10, 'agg_level': 'x', 'agg_columns': 'x, y, z', 'agg_geom': 'agga.xyz', 'agg_area': 'agga.abc', 'join_clause': 'test.test on tt.a = b.a', 'order_columns': 'd, c, b', 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}, {'raster_name': 'raster2', 'buffer': 20, 'agg_level': 'a', 'agg_columns': 'b, c, d', 'agg_geom': 'agga.abc', 'agg_area': 'agga.xyz', 'join_clause': '', 'order_columns': 'd, c, a', 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}, {'raster_name': 'raster2', 'buffer': 20, 'agg_level': 'x', 'agg_columns': 'x, y, z', 'agg_geom': 'agga.xyz', 'agg_area': 'agga.abc', 'join_clause': 'test.test on tt.a = b.a', 'order_columns': 'd, c, b', 'db_schema': 'db_schema', 'gbmi_schema': 'gbmi_schema'}]
         self.assertEqual(actual, expected)
 
     def test_c_params_empty_buffers(self):
@@ -209,6 +229,13 @@ class TestQueryParamsExpander(BaseTestQueryGenerator):
 
     def test_c_params_empty_rasters(self):
         param_expander = QueryParamsExpander(self.c_key, self.c_params_empty_rasters)
+        self.assertRaises(
+            QueryParamsExpanderException,
+            param_expander.run
+        )
+
+    def test_c_params_empty_agg_labels(self):
+        param_expander = QueryParamsExpander(self.c_key, self.c_params_empty_agg_labels)
         self.assertRaises(
             QueryParamsExpanderException,
             param_expander.run

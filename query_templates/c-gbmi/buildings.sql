@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS {{gbmi_schema}}.buildings CASCADE;
+
 CREATE TABLE {{gbmi_schema}}.buildings AS (
                           SELECT
                               "osm_id",
@@ -7,14 +9,28 @@ CREATE TABLE {{gbmi_schema}}.buildings AS (
                               st_area(way::geography) AS "calc_way_area",
                               st_perimeter(way::geography) AS "calc_perimeter",
                               st_npoints(way) AS "calc_count_vertices",
+                              st_convexhull(way) AS convhull,
+                              st_area(st_convexhull(way)::geography) AS convhull_area,
+                              st_envelope(way) AS mbr,
+                              st_area(st_envelope(way)::geography) AS mbr_area,
+                              st_orientedenvelope(way) AS oriented_mbr,
+                              st_area(st_orientedenvelope(way)::geography) AS oriented_mbr_area,
+                              CASE
+                                  WHEN lower(tags -> 'building') = 'residential' THEN TRUE
+                                  ELSE FALSE
+                              END AS "is_residential",
                               tags -> 'addr:city' AS "addr:city",
                               tags -> 'addr:country' AS "addr:country",
-                              tags -> 'height' AS "height",
-                              tags -> 'building:height' AS "building:height",
+                              tags -> 'height' AS "o_height",
+                              tags -> 'building:height' AS "o_building:height",
+                              COALESCE(SUBSTRING(tags -> 'height' FROM '\d+\.?\d*'),
+                                       SUBSTRING(tags -> 'building:height' FROM '\d+\.?\d*'))::numeric AS "height",
                               tags -> 'min_height' AS "min_height",
                               tags -> 'building:min_height' AS "building:min_height",
-                              tags -> 'levels' AS "levels",
-                              tags -> 'building:levels' AS "building:levels",
+                              tags -> 'levels' AS "o_levels",
+                              tags -> 'building:levels' AS "o_building:levels",
+                              COALESCE(SUBSTRING(tags -> 'building:levels' FROM '\d+\.?\d*'),
+                                       SUBSTRING(tags -> 'levels' FROM '\d+\.?\d*'))::numeric AS "building:levels",
                               tags -> 'building:levels:underground' AS "building:levels:underground",
                               tags -> 'min_level' AS "min_level",
                               tags -> 'building:min_level' AS "building:min_level",
@@ -34,16 +50,23 @@ CREATE TABLE {{gbmi_schema}}.buildings AS (
                               tags -> 'roof:direction' AS "roof:direction",
                               tags -> 'wall' AS wall,
                               tags -> 'building:age' AS "building:age",
-                              tags -> 'start_date' AS "start_date",
+                              SUBSTRING(tags -> 'year_of_construction' FROM '\d{4}')::SMALLINT AS "year_of_construction",
+                              SUBSTRING(tags -> 'start_date' FROM '\d{4}')::SMALLINT AS "start_date",
                               tags -> 'osm_uid' AS osm_uid,
                               tags -> 'osm_user' AS osm_user,
                               tags -> 'osm_version' AS osm_version
                           FROM
-                              {{gbmi_schema}}.planet_osm_polygon pop
-                          WHERE building IS NOT NULL AND lower(building) NOT IN ('no', 'not', 'non', 'none')
+                              {{db_schema}}.planet_osm_polygon pop
+                          WHERE building IS NOT NULL AND lower(building)
+                              IN (SELECT value AS building FROM {{misc_schema}}.osm_polygon_attr_freqs WHERE attr = 'building' AND value IS NOT NULL LIMIT 12)
                           );
 
 
-CREATE INDEX buildings_gidx ON {{gbmi_schema}}.buildings USING gist(way);
+CREATE INDEX buildings_osm_id ON gbmi.buildings(osm_id);
+
+CREATE INDEX buildings_spgist ON {{gbmi_schema}}.buildings USING spgist(way);
+
+CREATE INDEX buildings_centroid_spgist ON {{gbmi_schema}}.buildings USING spgist(way_centroid);
+
 
 VACUUM ANALYZE {{gbmi_schema}}.buildings;

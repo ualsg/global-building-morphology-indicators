@@ -14,6 +14,7 @@ class ConfigKeys:
     db_name = "db_name"
     db_schema = "db_schema"
     gbmi_schema = "gbmi_schema"
+    misc_schema = "misc_schema"
     new_users = "new_users"
     new_user = "new_user"
     password = "password"
@@ -23,6 +24,7 @@ class ConfigKeys:
     gadm_target_table = "gadm_target_table"
     rasters = "rasters"
     raster_name = "raster_name"
+    raster_population = "raster_population"
     raster_source_file = "raster_source_file"
     raster_target_table = "raster_target_table"
     c_gbmi = "c-gbmi"
@@ -30,6 +32,14 @@ class ConfigKeys:
     buffers = "buffers"
     buffer = "buffer"
     overwrite = "overwrite"
+    agg_levels = "agg_levels"
+    source_table = "source_table"
+    agg_level = "agg_level"
+    agg_columns = "agg_columns"
+    agg_geom = "agg_geom"
+    agg_area = "agg_area"
+    join_clause = "join_clause"
+    order_columns = "order_columns"
 
 
 class QueryGeneratorConfiguration:
@@ -113,9 +123,24 @@ class QueryGeneratorConfiguration:
                                     "properties": {
                                         ConfigKeys.raster_name: {"type": "string"},
                                         ConfigKeys.raster_source_file: {"type": "string"},
-                                        ConfigKeys.raster_target_table: {"type": "string"}
+                                        ConfigKeys.raster_target_table: {"type": "string"},
+                                        ConfigKeys.raster_population: {"type": "string"}
                                     },
                                     "required": [ConfigKeys.raster_name, ConfigKeys.raster_source_file, ConfigKeys.raster_target_table]
+                                }
+                            },
+                            ConfigKeys.agg_levels: {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        ConfigKeys.source_table: {"type": "string"},
+                                        ConfigKeys.agg_level: {"type": "string"},
+                                        ConfigKeys.agg_geom: {"type": "string"},
+                                        ConfigKeys.agg_columns: {"type": "string"},
+                                        ConfigKeys.order_columns: {"type": "string"}
+                                    },
+                                    "required": [ConfigKeys.source_table, ConfigKeys.agg_level, ConfigKeys.agg_geom, ConfigKeys.agg_columns, ConfigKeys.order_columns]
                                 }
                             }
                         },
@@ -130,12 +155,16 @@ class QueryGeneratorConfiguration:
                             ConfigKeys.gbmi_schema: {
                                 "type": "string"
                             },
+                            ConfigKeys.misc_schema: {
+                                "type": "string"
+                            },
                             ConfigKeys.raster_names: {
                                 "type": "array",
                                 "items": {
                                     "type": "object",
                                     "properties": {
-                                        ConfigKeys.raster_name: {"type": "string"}
+                                        ConfigKeys.raster_name: {"type": "string"},
+                                        ConfigKeys.raster_population: {"type": "string"}
                                     },
                                     "required": [ConfigKeys.raster_name]
                                 },
@@ -149,9 +178,24 @@ class QueryGeneratorConfiguration:
                                     },
                                     "required": [ConfigKeys.buffer]
                                 }
+                            },
+                            ConfigKeys.agg_levels: {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        ConfigKeys.agg_level: {"type": "string"},
+                                        ConfigKeys.agg_columns: {"type": "string"},
+                                        ConfigKeys.agg_geom: {"type": "string"},
+                                        ConfigKeys.agg_area: {"type": "string"},
+                                        ConfigKeys.join_clause: {"type": "string"},
+                                        ConfigKeys.order_columns: {"type": "string"}
+                                    },
+                                    "required": [ConfigKeys.agg_level, ConfigKeys.agg_columns, ConfigKeys.agg_geom, ConfigKeys.agg_area, ConfigKeys.join_clause, ConfigKeys.order_columns]
+                                }
                             }
                         },
-                        "required": [ConfigKeys.db_schema, ConfigKeys.gbmi_schema, ConfigKeys.raster_names, ConfigKeys.buffers]
+                        "required": [ConfigKeys.db_schema, ConfigKeys.gbmi_schema, ConfigKeys.misc_schema, ConfigKeys.raster_names, ConfigKeys.buffers, ConfigKeys.agg_levels]
                     }
                 },
                 "required": [

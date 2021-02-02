@@ -29,16 +29,23 @@ class QueryParamsExpander:
 
     def _expand_b_rasters_and_gadm_params(self) -> List[dict]:
         params_list = list()
+        if "rasters" in self.params.keys() and len(self.params["rasters"]) == 0:
+            raise QueryParamsExpanderException(
+                "`rasters` cannot be an empty list. Please define at least one raster.")
+
+        if "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) == 0:
+            raise QueryParamsExpanderException(
+                "`agg_levels` cannot be an empty list. Please define at least one set of parameters for at least one agg_level.")
+
         try:
-            if "rasters" in self.params.keys() and len(self.params["rasters"]) > 0:
-                for li in self.params["rasters"]:
+            for agg_dict in self.params["agg_levels"]:
+                for raster_dict in self.params["rasters"]:
+                    a = dict(agg_dict, **raster_dict)
                     for k, v in self.params.items():
                         if type(v) is str:
-                            li[k] = v
-                    params_list.append(li)
-            else:
-                popped = self.params.pop("rasters", None)
-                params_list.append(self.params)
+                            a[k] = v
+                    params_list.append(a)
+
             return params_list
         except Exception as e:
             raise QueryParamsExpanderException(e)
@@ -52,14 +59,21 @@ class QueryParamsExpander:
         if "buffers" in self.params.keys() and len(self.params["buffers"]) == 0:
             raise QueryParamsExpanderException("`buffers` cannot be an empty list. Please define at least one buffer.")
 
+        if "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) == 0:
+            raise QueryParamsExpanderException("`agg_levels` cannot be an empty list. Please define at least one set of parameters for at least one agg_level.")
+
         try:
             for dict_a in self.params["raster_names"]:
                 for dict_b in self.params["buffers"]:
                     a = dict(dict_a, **dict_b)
-                    for k, v in self.params.items():
-                        if type(v) is str:
-                            a[k] = v
-                    params_list.append(a)
+                    for dict_c in self.params["agg_levels"]:
+                        a = dict(a, **dict_c)
+                        for k, v in self.params.items():
+                            if type(v) is str:
+                                a[k] = v
+                        params_list.append(a)
+
+            print(len(params_list))
             return params_list
         except Exception as e:
             raise QueryParamsExpanderException(e)
