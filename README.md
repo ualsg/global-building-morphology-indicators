@@ -42,8 +42,8 @@ This section of the scripts are to:
 - calculate aggregated areas of countries and administrative boundaries
  
  
-#### Section c: Global Building Morphology Indices
+#### Section c: Global Building Morphology Indicators
 
-This section are the queries that create the building morphology index tables.  
+This section is the queries that create the building morphology indicator tables. The workflow of the 
 
 

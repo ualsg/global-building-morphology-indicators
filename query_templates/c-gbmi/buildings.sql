@@ -62,10 +62,11 @@ CREATE TABLE {{gbmi_schema}}.buildings AS (
                           );
 
 
-CREATE INDEX buildings_gidx ON {{gbmi_schema}}.buildings USING gist(way);
+CREATE INDEX buildings_osm_id ON gbmi.buildings(osm_id);
 
+CREATE INDEX buildings_spgist ON {{gbmi_schema}}.buildings USING spgist(way);
 
-CREATE INDEX buildings_centroid_gidx ON {{gbmi_schema}}.buildings USING gist(way_centroid);
+CREATE INDEX buildings_centroid_spgist ON {{gbmi_schema}}.buildings USING spgist(way_centroid);
 
 
 VACUUM ANALYZE {{gbmi_schema}}.buildings;
