@@ -81,7 +81,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
 
 CREATE INDEX buildings_neighbours_{{buffer}}_by_{{raster_name}}_osm_id ON {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}(osm_id);
 
-CREATE INDEX buildings_neighbours_{{buffer}}_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} USING spgist(way_centroid1);
+CREATE INDEX buildings_neighbours_{{buffer}}_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} USING spgist(way_centroid);
 
 CREATE INDEX buildings_neighbours_{{buffer}}_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} USING spgist(way);
 

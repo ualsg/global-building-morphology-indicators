@@ -85,7 +85,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_indicators_by_{{raster_name}} AS (
                                                               bgi."clipped_bldg_area",
                                                               bgi."clipped_bldg_perimeter"
                                                           FROM
-                                                              gbmi.buildings_geom_indicators_by_{{raster_name}}_by_centroid bgi
+                                                              gbmi.buildings_geom_indicators_by_{{raster_name}} bgi
                                                               LEFT JOIN gbmi.buildings_neighbours_indicators_by_{{raster_name}} bni
                                                                   ON bgi.osm_id = bni.osm_id AND bgi.way = bni.way
                                                           );
