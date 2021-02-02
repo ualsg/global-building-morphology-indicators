@@ -93,7 +93,15 @@
           "raster_name": "guf"
         },
         {
-          "raster_name": "worldpop2020",
+          "raster_name": "worldpop2020_1km_dl",
+          "raster_population": "cell_population"
+        },
+        {
+          "raster_name": "worldpop2020_1km",
+          "raster_population": "cell_population"
+        },
+        {
+          "raster_name": "worldpop2020_100m",
           "raster_population": "cell_population"
         }
       ],
