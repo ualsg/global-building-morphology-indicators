@@ -5,6 +5,8 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} AS (
                                         bldg1."osm_id" AS osm_id1,
                                         bldg1."way" AS way1,
                                         bldg1."way_centroid" AS way_centroid1,
+                                        bldg1."calc_way_area" AS way_area1,
+                                        bldg1."height" AS height1,
                                         bldg1."cell_id",
                                         bldg1."cell_centroid",
                                         bldg1."cell_geom",
@@ -22,11 +24,13 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} AS (
                                         bldg2."osm_id" AS osm_id2,
                                         bldg2."way" AS way2,
                                         bldg2."way_centroid" AS way_centroid2,
+                                        bldg2."calc_way_area" AS way_area2,
+                                        bldg2."height" AS height2,
                                         st_distance(bldg1.way_centroid, bldg2.way_centroid) AS distance
                                     FROM
                                         {{gbmi_schema}}.buildings_by_{{raster_name}} AS bldg1
                                                          CROSS JOIN (
-                                                                    SELECT osm_id, way, way_centroid
+                                                                    SELECT osm_id, way, way_centroid, calc_way_area, height
                                                                     FROM {{gbmi_schema}}.buildings_by_{{raster_name}}
                                                                     ) AS bldg2
                                     WHERE (NOT bldg1."way" = bldg2."way") AND ST_DWITHIN(bldg1.way_centroid, bldg2.way_centroid, 100)

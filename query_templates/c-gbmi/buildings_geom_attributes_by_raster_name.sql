@@ -124,6 +124,10 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                          bldg.is_residential,
                                          bldg."height",
                                          bldg."building:levels",
+                                         CASE
+                                             WHEN bldg."height" IS NOT NULL AND bldg.footprint_area > 0
+                                                 THEN bldg."height" * 1.0 / bldg.footprint_area
+                                         END AS "ratio_height_to_footprint_area",
                                          bldg.footprint_area * bldg."building:levels" AS est_floor_area,
                                          bldg.perimeter * bldg."height" AS est_wall_area,
                                          (bldg.perimeter * bldg."height") + bldg.footprint_area AS est_envelope_area,
@@ -147,7 +151,9 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                          "cell_country_official_name",
                                          "cell_country_code2",
                                          "cell_country_code3",
-                                         "clipped_way"
+                                         "clipped_way",
+                                         st_area(clipped_way::geography) AS "clipped_bldg_area",
+                                         st_perimeter(clipped_way::geography) AS "clipped_bldg_perimeter"
                                      FROM
                                          buildings_height_levels bldg
                                          LEFT JOIN buildings_mbr_attributes bma

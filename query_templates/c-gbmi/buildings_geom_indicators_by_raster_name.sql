@@ -24,62 +24,55 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} AS (
                                          "height",
                                          CASE
                                              WHEN "height" IS NOT NULL THEN percent_rank() OVER (ORDER BY "height")
-                                             ELSE NULL
                                          END AS height_pct_rnk,
                                          "building:levels",
                                          CASE
                                              WHEN "building:levels" IS NOT NULL
                                                  THEN percent_rank() OVER (ORDER BY "building:levels")
-                                             ELSE NULL
                                          END AS "building:levels_pct_rnk",
+                                         "ratio_height_to_footprint_area",
+                                         CASE
+                                             WHEN "ratio_height_to_footprint_area" IS NOT NULL THEN percent_rank() OVER (ORDER BY "ratio_height_to_footprint_area")
+                                         END AS ratio_height_to_footprint_area_pct_rnk,
                                          est_floor_area,
                                          CASE
                                              WHEN est_floor_area IS NOT NULL
                                                  THEN percent_rank() OVER (ORDER BY est_floor_area)
-                                             ELSE NULL
                                          END AS est_floor_area_pct_rnk,
                                          est_wall_area,
                                          CASE
                                              WHEN est_wall_area IS NOT NULL
                                                  THEN percent_rank() OVER (ORDER BY est_wall_area)
-                                             ELSE NULL
                                          END AS est_wall_area_pct_rnk,
                                          est_envelope_area,
                                          CASE
                                              WHEN est_envelope_area IS NOT NULL
                                                  THEN percent_rank() OVER (ORDER BY est_wall_area)
-                                             ELSE NULL
                                          END AS est_envelope_area_pct_rnk,
                                          est_volume,
                                          CASE
                                              WHEN est_volume IS NOT NULL THEN percent_rank() OVER (ORDER BY est_volume)
-                                             ELSE NULL
                                          END AS est_volume_pct_rnk,
                                          compactness,
                                          CASE
                                              WHEN compactness IS NOT NULL THEN percent_rank() OVER (ORDER BY compactness)
-                                             ELSE NULL
                                          END AS compactness_pct_rnk,
                                          complexity,
                                          CASE
                                              WHEN complexity IS NOT NULL THEN percent_rank() OVER (ORDER BY complexity)
-                                             ELSE NULL
                                          END AS complexity_pct_rnk,
                                          equivalent_rectangular_index,
                                          CASE
                                              WHEN equivalent_rectangular_index IS NOT NULL THEN percent_rank() OVER (ORDER BY equivalent_rectangular_index)
-                                             ELSE NULL
                                          END AS cequivalent_rectangular_index_pct_rnk,
                                          year_of_construction,
                                          CASE
                                              WHEN year_of_construction IS NOT NULL
                                                  THEN percent_rank() OVER (ORDER BY year_of_construction)
-                                             ELSE NULL
                                          END AS year_of_construction_pct_rnk,
                                          start_date,
                                          CASE
                                              WHEN start_date IS NOT NULL THEN percent_rank() OVER (ORDER BY start_date)
-                                             ELSE NULL
                                          END AS start_date_pct_rnk,
                                          "cell_id",
                                          "cell_centroid",
@@ -95,7 +88,9 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} AS (
                                          "cell_country_official_name",
                                          "cell_country_code2",
                                          "cell_country_code3",
-                                         "clipped_way"
+                                         "clipped_way",
+                                         st_area(clipped_way::geography) AS "clipped_bldg_area",
+                                         st_perimeter(clipped_way::geography) AS "clipped_bldg_perimeter"
                                      FROM
                                          {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}
                                      );

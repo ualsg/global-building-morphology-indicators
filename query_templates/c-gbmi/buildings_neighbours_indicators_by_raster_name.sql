@@ -8,7 +8,15 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}} 
                                                                        CASE
                                                                            WHEN distance_25_mean IS NOT NULL
                                                                                THEN percent_rank() OVER (ORDER BY distance_25_mean)
-                                                                       END AS distance_25_mean_pct_rnk
+                                                                       END AS distance_25_mean_pct_rnk,
+                                                                       CASE
+                                                                           WHEN neighbour_footprint_area_25_mean IS NOT NULL
+                                                                               THEN percent_rank() OVER (ORDER BY neighbour_footprint_area_25_mean)
+                                                                       END AS neighbour_footprint_area_25_mean_pct_rnk,
+                                                                       CASE
+                                                                           WHEN ratio_neighbour_height_to_distance_25_mean IS NOT NULL
+                                                                               THEN percent_rank() OVER (ORDER BY ratio_neighbour_height_to_distance_25_mean)
+                                                                       END AS ratio_neighbour_height_to_distance_25_mean_pct_rnk
                                                                    FROM
                                                                        {{gbmi_schema}}.buildings_neighbours_25_by_{{raster_name}}
                                                                    ),
@@ -17,7 +25,15 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}} 
                                                                       CASE
                                                                           WHEN distance_50_mean IS NOT NULL
                                                                               THEN percent_rank() OVER (ORDER BY distance_50_mean)
-                                                                      END AS distance_50_mean_pct_rnk
+                                                                      END AS distance_50_mean_pct_rnk,
+                                                                      CASE
+                                                                          WHEN neighbour_footprint_area_50_mean IS NOT NULL
+                                                                              THEN percent_rank() OVER (ORDER BY neighbour_footprint_area_50_mean)
+                                                                      END AS neighbour_footprint_area_50_mean_pct_rnk,
+                                                                      CASE
+                                                                          WHEN ratio_neighbour_height_to_distance_50_mean IS NOT NULL
+                                                                              THEN percent_rank() OVER (ORDER BY ratio_neighbour_height_to_distance_50_mean)
+                                                                      END AS ratio_neighbour_height_to_distance_50_mean_pct_rnk
                                                                   FROM
                                                                       {{gbmi_schema}}.buildings_neighbours_50_by_{{raster_name}}
                                                                   ),
@@ -26,7 +42,15 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}} 
                                                                       CASE
                                                                           WHEN distance_100_mean IS NOT NULL
                                                                               THEN percent_rank() OVER (ORDER BY distance_100_mean)
-                                                                      END AS distance_100_mean_pct_rnk
+                                                                      END AS distance_100_mean_pct_rnk,
+                                                                      CASE
+                                                                           WHEN neighbour_footprint_area_100_mean IS NOT NULL
+                                                                               THEN percent_rank() OVER (ORDER BY neighbour_footprint_area_100_mean)
+                                                                      END AS neighbour_footprint_area_100_mean_pct_rnk,
+                                                                      CASE
+                                                                           WHEN ratio_neighbour_height_to_distance_100_mean IS NOT NULL
+                                                                               THEN percent_rank() OVER (ORDER BY ratio_neighbour_height_to_distance_100_mean)
+                                                                      END AS ratio_neighbour_height_to_distance_100_mean_pct_rnk
                                                                   FROM
                                                                       {{gbmi_schema}}.buildings_neighbours_100_by_{{raster_name}}
                                                                   )
@@ -55,7 +79,25 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}} 
                                                         distance_100_mean,
                                                         distance_100_sd,
                                                         distance_100_d,
+                                                        distance_100_cv,
                                                         distance_100_mean_pct_rnk,
+                                                        neighbour_footprint_area_100_sum,
+                                                        neighbour_footprint_area_100_min,
+                                                        neighbour_footprint_area_100_max,
+                                                        neighbour_footprint_area_100_median,
+                                                        neighbour_footprint_area_100_mean,
+                                                        neighbour_footprint_area_100_sd,
+                                                        neighbour_footprint_area_100_d,
+                                                        neighbour_footprint_area_100_cv,
+                                                        neighbour_footprint_area_100_mean_pct_rnk,
+                                                        ratio_neighbour_height_to_distance_100_min,
+                                                        ratio_neighbour_height_to_distance_100_max,
+                                                        ratio_neighbour_height_to_distance_100_median,
+                                                        ratio_neighbour_height_to_distance_100_mean,
+                                                        ratio_neighbour_height_to_distance_100_sd,
+                                                        ratio_neighbour_height_to_distance_100_d,
+                                                        ratio_neighbour_height_to_distance_100_cv,
+                                                        ratio_neighbour_height_to_distance_100_mean_pct_rnk,
                                                         neighbour_50_count,
                                                         distance_50_min,
                                                         distance_50_median,
@@ -63,7 +105,25 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}} 
                                                         distance_50_mean,
                                                         distance_50_sd,
                                                         distance_50_d,
+                                                        distance_50_cv,
                                                         distance_50_mean_pct_rnk,
+                                                        neighbour_footprint_area_50_sum,
+                                                        neighbour_footprint_area_50_min,
+                                                        neighbour_footprint_area_50_max,
+                                                        neighbour_footprint_area_50_median,
+                                                        neighbour_footprint_area_50_mean,
+                                                        neighbour_footprint_area_50_sd,
+                                                        neighbour_footprint_area_50_d,
+                                                        neighbour_footprint_area_50_cv,
+                                                        neighbour_footprint_area_50_mean_pct_rnk,
+                                                        ratio_neighbour_height_to_distance_50_min,
+                                                        ratio_neighbour_height_to_distance_50_max,
+                                                        ratio_neighbour_height_to_distance_50_median,
+                                                        ratio_neighbour_height_to_distance_50_mean,
+                                                        ratio_neighbour_height_to_distance_50_sd,
+                                                        ratio_neighbour_height_to_distance_50_d,
+                                                        ratio_neighbour_height_to_distance_50_cv,
+                                                        ratio_neighbour_height_to_distance_50_mean_pct_rnk,
                                                         neighbour_25_count,
                                                         distance_25_min,
                                                         distance_25_median,
@@ -71,7 +131,25 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}} 
                                                         distance_25_mean,
                                                         distance_25_sd,
                                                         distance_25_d,
-                                                        distance_25_mean_pct_rnk
+                                                        distance_25_cv,
+                                                        distance_25_mean_pct_rnk,
+                                                        neighbour_footprint_area_25_sum,
+                                                        neighbour_footprint_area_25_min,
+                                                        neighbour_footprint_area_25_max,
+                                                        neighbour_footprint_area_25_median,
+                                                        neighbour_footprint_area_25_mean,
+                                                        neighbour_footprint_area_25_sd,
+                                                        neighbour_footprint_area_25_d,
+                                                        neighbour_footprint_area_25_cv,
+                                                        neighbour_footprint_area_25_mean_pct_rnk,
+                                                        ratio_neighbour_height_to_distance_25_min,
+                                                        ratio_neighbour_height_to_distance_25_max,
+                                                        ratio_neighbour_height_to_distance_25_median,
+                                                        ratio_neighbour_height_to_distance_25_mean,
+                                                        ratio_neighbour_height_to_distance_25_sd,
+                                                        ratio_neighbour_height_to_distance_25_d,
+                                                        ratio_neighbour_height_to_distance_25_cv,
+                                                        ratio_neighbour_height_to_distance_25_mean_pct_rnk
                                                     FROM
                                                         bn_100
                                                         LEFT JOIN bn_50 ON bn_100.osm_id = bn_50.osm_id AND bn_100.way = bn_50.way

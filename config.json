@@ -28,7 +28,13 @@
       "gadm_target_table": "gadm36",
       "rasters": [
         {
-          "raster_name": "worldpop2020",
+          "raster_name": "worldpop2020_1km",
+          "raster_source_file": "/data/worldpop/ppp_2020_1km_aggregated.tif",
+          "raster_target_table": "raw_tiles_worldpop2020",
+          "raster_population": "cell_population"
+        },
+        {
+          "raster_name": "worldpop2020_100m",
           "raster_source_file": "/data/worldpop/ppp_2020_1km_aggregated.tif",
           "raster_target_table": "raw_tiles_worldpop2020",
           "raster_population": "cell_population"
@@ -91,10 +97,6 @@
       "raster_names": [
         {
           "raster_name": "guf"
-        },
-        {
-          "raster_name": "worldpop2020_1km_dl",
-          "raster_population": "cell_population"
         },
         {
           "raster_name": "worldpop2020_1km",

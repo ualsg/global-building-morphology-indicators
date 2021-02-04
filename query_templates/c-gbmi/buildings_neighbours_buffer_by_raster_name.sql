@@ -2,7 +2,11 @@ DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster
 
 CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} AS (
                                                               WITH bldgs_within_{{buffer}} AS (
-                                                                                       SELECT *
+                                                                                       SELECT
+                                                                                            *,
+                                                                                            CASE
+                                                                                                WHEN height2 IS NOT NULL AND distance > 0 THEN height2 * 1.0 / distance
+                                                                                            END AS ratio_neighbour_height_to_distance
                                                                                        FROM
                                                                                            {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}
                                                                                        WHERE distance > 0 AND distance <= {{buffer}}
@@ -22,9 +26,9 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
                                                                                              osm_id1,
                                                                                              way1,
                                                                                              way_centroid1,
-                                                                                             percentile_cont(0.25) WITHIN GROUP (ORDER BY distance) AS distance_{{buffer}}_25th_percentile,
                                                                                              percentile_cont(0.5) WITHIN GROUP (ORDER BY distance) AS distance_{{buffer}}_median,
-                                                                                             percentile_cont(0.75) WITHIN GROUP (ORDER BY distance) AS distance_{{buffer}}_75th_percentile
+                                                                                             percentile_cont(0.5) WITHIN GROUP (ORDER BY way_area2) AS neighbour_footprint_area_{{buffer}}_median,
+                                                                                             percentile_cont(0.5) WITHIN GROUP (ORDER BY ratio_neighbour_height_to_distance) AS ratio_neighbour_height_to_distance_{{buffer}}_median
                                                                                          FROM
                                                                                              bldgs_within_{{buffer}}
                                                                                          GROUP BY osm_id1, way1, way_centroid1
@@ -64,7 +68,43 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
                                                                   CASE
                                                                       WHEN AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
                                                                           THEN STDDEV_POP(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
-                                                                  END AS distance_{{buffer}}_cv
+                                                                  END AS distance_{{buffer}}_cv,
+                                                                  SUM(bn_{{buffer}}.way_area2)
+                                                                    OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS neighbour_footprint_area_{{buffer}}_sum,
+                                                                  MIN(bn_{{buffer}}.way_area2)
+                                                                    OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS neighbour_footprint_area_{{buffer}}_min,
+                                                                  MAX(bn_{{buffer}}.way_area2)
+                                                                    OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS neighbour_footprint_area_{{buffer}}_max,
+                                                                  md_{{buffer}}.neighbour_footprint_area_{{buffer}}_median,
+                                                                  AVG(bn_{{buffer}}.way_area2)
+                                                                    OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS neighbour_footprint_area_{{buffer}}_mean,
+                                                                  STDDEV_POP(bn_{{buffer}}.way_area2)
+                                                                    OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS neighbour_footprint_area_{{buffer}}_sd,
+                                                                  CASE
+                                                                      WHEN AVG(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
+                                                                          THEN VAR_POP(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
+                                                                  END AS neighbour_footprint_area_{{buffer}}_d,
+                                                                  CASE
+                                                                      WHEN AVG(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
+                                                                          THEN STDDEV_POP(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
+                                                                  END AS neighbour_footprint_area_{{buffer}}_cv,
+                                                                  MIN(bn_{{buffer}}.ratio_neighbour_height_to_distance)
+                                                                    OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS ratio_neighbour_height_to_distance_{{buffer}}_min,
+                                                                  MAX(bn_{{buffer}}.ratio_neighbour_height_to_distance)
+                                                                    OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS ratio_neighbour_height_to_distance_{{buffer}}_max,
+                                                                  md_{{buffer}}.ratio_neighbour_height_to_distance_{{buffer}}_median,
+                                                                  AVG(bn_{{buffer}}.ratio_neighbour_height_to_distance)
+                                                                    OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS ratio_neighbour_height_to_distance_{{buffer}}_mean,
+                                                                  STDDEV_POP(bn_{{buffer}}.ratio_neighbour_height_to_distance)
+                                                                    OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS ratio_neighbour_height_to_distance_{{buffer}}_sd,
+                                                                  CASE
+                                                                      WHEN AVG(bn_{{buffer}}.ratio_neighbour_height_to_distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
+                                                                          THEN VAR_POP(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
+                                                                  END AS ratio_neighbour_height_to_distance_{{buffer}}_d,
+                                                                  CASE
+                                                                      WHEN AVG(bn_{{buffer}}.ratio_neighbour_height_to_distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
+                                                                          THEN STDDEV_POP(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
+                                                                  END AS ratio_neighbour_height_to_distance_{{buffer}}_cv
                                                               FROM
                                                                   bldgs_within_{{buffer}} bn_{{buffer}}
                                                                   LEFT JOIN count_neighbours_{{buffer}} cn_{{buffer}}
