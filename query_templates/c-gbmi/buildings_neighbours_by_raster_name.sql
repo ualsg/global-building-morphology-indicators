@@ -33,7 +33,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} AS (
                                                                     SELECT osm_id, way, way_centroid, calc_way_area, height
                                                                     FROM {{gbmi_schema}}.buildings_by_{{raster_name}}
                                                                     ) AS bldg2
-                                    WHERE (NOT bldg1."way" = bldg2."way") AND ST_DWITHIN(bldg1.way_centroid, bldg2.way_centroid, 100)
+                                    WHERE ST_DWITHIN(bldg1.way_centroid, bldg2.way_centroid, 100) AND NOT ST_Equals(bldg1."way"::geometry, bldg2."way"::geometry)
                                     ORDER BY cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5, osm_id1, osm_id2, st_distance(bldg1.way_centroid, bldg2.way_centroid)
                                     );
 

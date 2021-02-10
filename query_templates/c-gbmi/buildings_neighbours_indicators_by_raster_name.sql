@@ -152,8 +152,8 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}} 
                                                         ratio_neighbour_height_to_distance_25_mean_pct_rnk
                                                     FROM
                                                         bn_100
-                                                        LEFT JOIN bn_50 ON bn_100.osm_id = bn_50.osm_id AND bn_100.way = bn_50.way
-                                                        LEFT JOIN bn_25 ON bn_50.osm_id = bn_25.osm_id AND bn_50.way = bn_25.way
+                                                        LEFT JOIN bn_50 ON bn_100.osm_id = bn_50.osm_id AND ST_Equals(bn_100.way::geometry, bn_50.way::geometry)
+                                                        LEFT JOIN bn_25 ON bn_50.osm_id = bn_25.osm_id AND ST_Equals(bn_50.way::geometry, bn_25.way::geometry)
                                                     );
 
 

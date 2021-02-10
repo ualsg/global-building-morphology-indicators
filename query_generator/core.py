@@ -73,7 +73,6 @@ class QueryParamsExpander:
                                 a[k] = v
                         params_list.append(a)
 
-            print(len(params_list))
             return params_list
         except Exception as e:
             raise QueryParamsExpanderException(e)

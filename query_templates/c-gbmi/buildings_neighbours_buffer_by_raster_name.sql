@@ -109,12 +109,12 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
                                                                   bldgs_within_{{buffer}} bn_{{buffer}}
                                                                   LEFT JOIN count_neighbours_{{buffer}} cn_{{buffer}}
                                                                   ON bn_{{buffer}}.osm_id1 = cn_{{buffer}}.osm_id1 AND
-                                                                     bn_{{buffer}}.way1 = cn_{{buffer}}.way1 AND
-                                                                     bn_{{buffer}}.way_centroid1 = cn_{{buffer}}.way_centroid1
+                                                                     ST_Equals(bn_{{buffer}}.way1::geometry, cn_{{buffer}}.way1::geometry) AND
+                                                                     ST_Equals(bn_{{buffer}}.way_centroid1::geometry, cn_{{buffer}}.way_centroid1::geometry)
                                                                   LEFT JOIN median_distance_{{buffer}} md_{{buffer}}
                                                                   ON bn_{{buffer}}.osm_id1 = md_{{buffer}}.osm_id1 AND
-                                                                     bn_{{buffer}}.way1 = md_{{buffer}}.way1 AND
-                                                                     bn_{{buffer}}.way_centroid1 = md_{{buffer}}.way_centroid1
+                                                                     ST_Equals(bn_{{buffer}}.way1::geometry, md_{{buffer}}.way1::geometry) AND
+                                                                     ST_Equals(bn_{{buffer}}.way_centroid1::geometry, md_{{buffer}}.way_centroid1::geometry)
                                                               );
 
 
