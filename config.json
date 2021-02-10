@@ -7,6 +7,7 @@
       "superuser": "postgres",
       "db_name": "planet",
       "db_schema": "public",
+      "misc_schema": "misc",
       "gbmi_schema": "gbmi",
       "new_users": [
         {
@@ -20,17 +21,25 @@
       ]
     },
     "b-rasters-and-gadm": {
-      "host_address": "rds.amazonaws.com",
-      "db_name": "openstreetmap",
+      "host_address": "openstreetmap.rds.amazonaws.com",
+      "db_name": "planet",
       "db_schema": "public",
-      "user": "tom",
-      "gadm_source_file": "/data/gadm36_shp/gadm36.shp",
+      "user": "hana",
+      "gadm_source_file": "/data/gadm36/gadm36.shp",
       "gadm_target_table": "gadm36",
       "rasters": [
         {
-          "raster_name": "worldpop2020",
-          "raster_source_file": "/data/worldpop/ppp_2020_1km_aggregated.tif",
-          "raster_target_table": "raw_tiles_worldpop2020",
+          "raster_name": "worldpop2020_1km",
+          "raster_download_path": "http://ftp.worldpop.org/2020/0_Mosaicked/ppp_2020_1km_Aggregated.tif",
+          "raster_source_file": "ppp_2020_1km_aggregated.tif",
+          "raster_target_table": "raw_tiles_worldpop2020_1km",
+          "raster_population": "cell_population"
+        },
+        {
+          "raster_name": "worldpop2020_100m",
+          "raster_download_path": "http://ftp.worldpop.org/2020/0_Mosaicked/global_mosaic_ppp_100m_2020_vrt.zip",
+          "raster_source_file": "global_mosaic_ppp_100m_2020_vrt.zip",
+          "raster_target_table": "raw_tiles_worldpop2020_100m",
           "raster_population": "cell_population"
         },
         {
@@ -93,7 +102,11 @@
           "raster_name": "guf"
         },
         {
-          "raster_name": "worldpop2020",
+          "raster_name": "worldpop2020_1km",
+          "raster_population": "cell_population"
+        },
+        {
+          "raster_name": "worldpop2020_100m",
           "raster_population": "cell_population"
         }
       ],
