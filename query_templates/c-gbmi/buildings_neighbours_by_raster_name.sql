@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} CASCADE;
 
 CREATE TABLE {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} AS (
-                                    SELECT
+                                    SELECT DISTINCT
                                         bldg1."osm_id" AS osm_id1,
                                         bldg1."way" AS way1,
                                         bldg1."way_centroid" AS way_centroid1,
@@ -30,7 +30,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} AS (
                                     FROM
                                         {{gbmi_schema}}.buildings_by_{{raster_name}} AS bldg1
                                                          CROSS JOIN (
-                                                                    SELECT osm_id, way, way_centroid, calc_way_area, height
+                                                                    SELECT DISTINCT osm_id, way, way_centroid, calc_way_area, height
                                                                     FROM {{gbmi_schema}}.buildings_by_{{raster_name}}
                                                                     ) AS bldg2
                                     WHERE ST_DWITHIN(bldg1.way_centroid, bldg2.way_centroid, 100) AND NOT ST_Equals(bldg1."way"::geometry, bldg2."way"::geometry)
@@ -47,3 +47,18 @@ CREATE INDEX buildings_neighbours_by_{{raster_name}}_centroid_spgist ON {{gbmi_s
 CREATE INDEX buildings_neighbours_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} USING SPGIST (way1);
 
 VACUUM ANALYZE {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}};
+
+
+
+-- MATERIALIZED VIEW FOR DEBUGGING
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}_duplicates CASCADE;
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}_duplicates AS
+    SELECT
+        ({{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}.*)::text,
+        count(*)
+    FROM
+        {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}
+    GROUP BY
+        {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}.*
+    HAVING count(*) > 1;

@@ -24,6 +24,7 @@
       "host_address": "openstreetmap.rds.amazonaws.com",
       "db_name": "planet",
       "db_schema": "public",
+      "country_codes_csv": "/data/country_codes.csv",
       "user": "hana",
       "gadm_source_file": "/data/gadm36/gadm36.shp",
       "gadm_target_table": "gadm36",
@@ -119,6 +120,84 @@
         },
         {
           "buffer": 100
+        }
+      ],
+      "agg_levels": [
+        {
+          "agg_level": "cell",
+          "agg_columns": "cell_id, cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5",
+          "agg_geom": "cell_geom",
+          "agg_area": "cell_area",
+          "join_clause": "",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5, cell_id"
+        },
+        {
+          "agg_level": "admin_div5",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5",
+          "agg_geom": "agg_geom_admin_div5",
+          "agg_area": "agg_area_admin_div5",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div5 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1 AND bga.cell_admin_div2 = agga.admin_div2 AND bga.cell_admin_div3 = agga.admin_div3 AND bga.cell_admin_div4 = agga.admin_div4 AND bga.cell_admin_div5 = agga.admin_div5",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5"
+        },
+        {
+          "agg_level": "admin_div4",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4",
+          "agg_geom": "agg_geom_admin_div4",
+          "agg_area": "agg_area_admin_div4",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div4 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1 AND bga.cell_admin_div2 = agga.admin_div2 AND bga.cell_admin_div3 = agga.admin_div3 AND bga.cell_admin_div4 = agga.admin_div4",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4"
+        },
+        {
+          "agg_level": "admin_div3",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3",
+          "agg_geom": "agg_geom_admin_div3",
+          "agg_area": "agg_area_admin_div3",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div3 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1 AND bga.cell_admin_div2 = agga.admin_div2 AND bga.cell_admin_div3 = agga.admin_div3",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3"
+        },
+        {
+          "agg_level": "admin_div2",
+          "agg_columns": "cell_country, cell_admin_div1, cell_admin_div2",
+          "agg_geom": "agg_geom_admin_div2",
+          "agg_area": "agg_area_admin_div2",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div2 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1 AND bga.cell_admin_div2 = agga.admin_div2",
+          "order_columns": "cell_country, cell_admin_div1, cell_admin_div2"
+        },
+        {
+          "agg_level": "admin_div1",
+          "agg_columns": "cell_country, cell_admin_div1",
+          "agg_geom": "agg_geom_admin_div1",
+          "agg_area": "agg_area_admin_div1",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_admin_div1 agga ON bga.cell_country = agga.country AND bga.cell_admin_div1 = agga.admin_div1",
+          "order_columns": "cell_country, cell_admin_div1"
+        },
+        {
+          "agg_level": "country",
+          "agg_columns": "cell_country",
+          "agg_geom": "agg_geom_country",
+          "agg_area": "agg_area_country",
+          "join_clause": "LEFT JOIN public.agg_gadm36_geom_areas_country agga ON bga.cell_country = agga.country",
+          "order_columns": "cell_country"
+        }
+      ]
+    },
+    "c-misc": {
+      "host_address": "openstreetmap.rds.amazonaws.com",
+      "db_name": "planet",
+      "db_schema": "public",
+      "gbmi_schema": "gbmi",
+      "misc_schema": "misc",
+      "raster_names": [
+        {
+          "raster_name": "guf"
+        },
+        {
+          "raster_name": "worldpop2020_1km",
+          "raster_population": "cell_population"
+        },
+        {
+          "raster_name": "worldpop2020_100m",
+          "raster_population": "cell_population"
         }
       ],
       "agg_levels": [

@@ -47,7 +47,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                                          pointsets
                                                      ),
                                          buildings_mbr_attributes AS (
-                                                                     SELECT
+                                                                     SELECT DISTINCT
                                                                          osm_id,
                                                                          way,
                                                                          way_centroid,
@@ -65,7 +65,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                                                      WHERE max_length = line_length
                                                                      ),
                                          buildings_height_levels AS (
-                                                                     SELECT
+                                                                     SELECT DISTINCT
                                                                          osm_id,
                                                                          tags,
                                                                          way,
@@ -103,8 +103,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                                                          "cell_population",{% endif %}
                                                                          "cell_country_official_name",
                                                                          "cell_country_code2",
-                                                                         "cell_country_code3",
-                                                                         "clipped_way"
+                                                                         "cell_country_code3"
                                                                      FROM
                                                                          {{gbmi_schema}}.buildings_by_{{raster_name}}
                                                                     )
@@ -150,12 +149,23 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                          "cell_population",{% endif %}
                                          "cell_country_official_name",
                                          "cell_country_code2",
-                                         "cell_country_code3",
-                                         "clipped_way",
-                                         st_area(clipped_way::geography) AS "clipped_bldg_area",
-                                         st_perimeter(clipped_way::geography) AS "clipped_bldg_perimeter"
+                                         "cell_country_code3"
                                      FROM
                                          buildings_height_levels bldg
                                          LEFT JOIN buildings_mbr_attributes bma
                                              ON bldg.osm_id = bma.osm_id AND bldg.way = bma.way
                                      );
+
+
+-- MATERIALIZED VIEW FOR DEBUGGING
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}_duplicates CASCADE;
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}_duplicates AS
+    SELECT
+        ({{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}.*)::text,
+        count(*)
+    FROM
+        {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}
+    GROUP BY
+        {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}.*
+    HAVING count(*) > 1;

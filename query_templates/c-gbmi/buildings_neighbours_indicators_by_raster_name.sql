@@ -166,3 +166,19 @@ CREATE INDEX buildings_neighbours_indicators_by_{{raster_name}}_centroid_spgist 
 CREATE INDEX buildings_neighbours_indicators_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}} USING SPGIST (way);
 
 VACUUM ANALYZE {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}};
+
+
+
+
+-- MATERIALIZED VIEW FOR DEBUGGING
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}}_duplicates CASCADE;
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}}_duplicates AS
+    SELECT
+        ({{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}}.*)::text,
+        count(*)
+    FROM
+        {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}}
+    GROUP BY
+        {{gbmi_schema}}.buildings_neighbours_indicators_by_{{raster_name}}.*
+    HAVING count(*) > 1;
