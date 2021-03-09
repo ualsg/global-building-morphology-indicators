@@ -87,3 +87,35 @@ CREATE INDEX buildings_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_by
 
 VACUUM ANALYZE {{gbmi_schema}}.buildings_by_{{raster_name}};
 
+-- MATERIALIZED VIEW FOR DEBUGGING
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_by_{{raster_name}}_duplicates CASCADE;
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_by_{{raster_name}}_duplicates AS
+    SELECT
+        ({{gbmi_schema}}.buildings_by_{{raster_name}}.*)::text,
+        count(*)
+    FROM
+        {{gbmi_schema}}.buildings_by_{{raster_name}}
+    GROUP BY
+        {{gbmi_schema}}.buildings_by_{{raster_name}}.*
+    HAVING count(*) > 1;
+
+
+-- MATERIALIZED VIEW FOR DEBUGGING
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_by_{{raster_name}}_except_clipped_duplicates CASCADE;
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_by_{{raster_name}}_except_clipped_duplicates AS
+    WITH tbl AS (
+            SELECT
+                "osm_id", "tags", "way", "way_centroid", "calc_way_area", "calc_perimeter", "calc_count_vertices", "convhull", "convhull_area", "mbr", "mbr_area", "oriented_mbr", "oriented_mbr_area", "is_residential", "addr:city", "addr:country", "o_height", "o_building:height", "height", "min_height", "building:min_height", "o_levels", "o_building:levels", "building:levels", "building:levels:underground", "min_level", "building:min_level", "building:condition", "building:material", "building:part", "building:use", "building:roof", "roof:shape", "building:roof:shape", "roof:levels", "building:roof:levels", "roof:material", "roof:orientation", "roof:height", "roof:angle", "roof:direction", "wall", "building:age", "year_of_construction", "start_date", "osm_uid", "osm_user", "osm_version", "cell_id", "cell_centroid", "cell_geom", "cell_area", "cell_country", "cell_admin_div1", "cell_admin_div2", "cell_admin_div3", "cell_admin_div4", "cell_admin_div5", "cell_population", "cell_country_official_name", "cell_country_code2", "cell_country_code3"
+            FROM
+                {{gbmi_schema}}.buildings_by_{{raster_name}}
+                )
+    SELECT
+        (tbl.*)::text,
+        count(*)
+    FROM
+        tbl
+    GROUP BY
+        tbl.*
+    HAVING count(*) > 1;

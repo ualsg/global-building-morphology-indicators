@@ -70,3 +70,18 @@ CREATE INDEX buildings_centroid_spgist ON {{gbmi_schema}}.buildings USING spgist
 
 
 VACUUM ANALYZE {{gbmi_schema}}.buildings;
+
+
+
+-- MATERIALIZED VIEW FOR DEBUGGING
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_duplicates CASCADE;
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_duplicates AS
+    SELECT
+        ({{gbmi_schema}}.buildings.*)::text,
+        count(*)
+    FROM
+        {{gbmi_schema}}.buildings
+    GROUP BY
+        {{gbmi_schema}}.buildings.*
+    HAVING count(*) > 1;

@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}};
+DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} CASCADE;
 
 CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} AS (
                                                               WITH bldgs_within_{{buffer}} AS (
@@ -10,6 +10,9 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
                                                                                        FROM
                                                                                            {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}
                                                                                        WHERE distance > 0 AND distance <= {{buffer}}
+                                                                                           AND osm_id1 != osm_id2
+                                                                                           AND NOT ST_Equals(way_centroid1::geometry, way_centroid2::geometry)
+                                                                                           AND NOT ST_Equals(way1::geometry, way2::geometry)
                                                                                        ),
                                                                   count_neighbours_{{buffer}} AS (
                                                                                           SELECT
@@ -33,7 +36,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
                                                                                              bldgs_within_{{buffer}}
                                                                                          GROUP BY osm_id1, way1, way_centroid1
                                                                                          )
-                                                              SELECT
+                                                              SELECT DISTINCT
                                                                   bn_{{buffer}}.osm_id1 AS osm_id,
                                                                   bn_{{buffer}}.way1 AS way,
                                                                   bn_{{buffer}}.way_centroid1 AS way_centroid,
@@ -126,3 +129,17 @@ CREATE INDEX buildings_neighbours_{{buffer}}_by_{{raster_name}}_centroid_spgist 
 CREATE INDEX buildings_neighbours_{{buffer}}_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} USING spgist(way);
 
 VACUUM ANALYZE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}};
+
+
+-- MATERIALIZED VIEW FOR DEBUGGING
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}_duplicates CASCADE;
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}_duplicates AS
+    SELECT
+        ({{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}.*)::text,
+        count(*)
+    FROM
+        {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}
+    GROUP BY
+        {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}.*
+    HAVING count(*) > 1;

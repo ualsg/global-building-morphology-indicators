@@ -11,7 +11,7 @@ CREATE TABLE {{db_schema}}.raster_polygons_{{raster_name}} AS (
                                         (
                                         SELECT ST_PixelAsPolygons(rast) AS gv
                                         FROM {{db_schema}}.raw_tiles_{{raster_name}}
-                                        ) AS gvv
+                                        ) AS tiles
                                     );
 
 

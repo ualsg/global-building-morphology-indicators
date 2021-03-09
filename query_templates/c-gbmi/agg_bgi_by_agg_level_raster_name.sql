@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.agg_buildings_geom_indicators_by_{{agg_level}}_{{raster_name}};
+DROP TABLE IF EXISTS {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}} CASCADE;
 
-CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_{{agg_level}}_{{raster_name}} AS (
-                                                                        WITH agg0 AS (
+CREATE TABLE {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}} AS (
+                                                                            WITH agg0 AS (
                                                                                      SELECT
                                                                                          {{agg_columns}},
                                                                                          {{agg_geom}},
@@ -29,6 +29,10 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_{{agg_level}}_{{ra
                                                                                          max(height) AS height_max,
                                                                                          stddev_pop(height) AS height_sd,
                                                                                          var_pop(height) AS height_var,
+                                                                                         CASE
+                                                                                             WHEN sum(clipped_bldg_area) = 0 THEN 0
+                                                                                             ELSE sum(height * clipped_bldg_area) / sum(clipped_bldg_area)
+                                                                                         END AS height_weighted_mean,
                                                                                          min(ratio_height_to_footprint_area) AS ratio_height_to_footprint_area_min,
                                                                                          (percentile_cont(0.5) WITHIN GROUP ( ORDER BY ratio_height_to_footprint_area )) AS ratio_height_to_footprint_area_median,
                                                                                          avg(ratio_height_to_footprint_area) AS ratio_height_to_footprint_area_mean,
@@ -61,12 +65,12 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_{{agg_level}}_{{ra
                                                                                          var_pop(est_envelope_area) AS envelope_area_var,
                                                                                          min(vertices_count) AS vertices_count_min,
                                                                                          (percentile_cont(0.5) WITHIN GROUP ( ORDER BY vertices_count )) AS vertices_count_median,
-                                                                                         avg(vertices_count) AS vertices_count_mean,
-                                                                                         max(vertices_count) AS vertices_count_max,
-                                                                                         sum(vertices_count) AS vertices_count_sum,
-                                                                                         sum(vertices_count) / {{agg_area}} AS vertices_count_sum_normalised,
-                                                                                         stddev_pop(vertices_count) AS vertices_count_sd,
-                                                                                         var_pop(vertices_count) AS vertices_count_var,
+                                                                                         avg(clipped_vertices_count) AS vertices_count_mean,
+                                                                                         max(clipped_vertices_count) AS vertices_count_max,
+                                                                                         sum(clipped_vertices_count) AS vertices_count_sum,
+                                                                                         sum(clipped_vertices_count) / {{agg_area}} AS vertices_count_sum_normalised,
+                                                                                         stddev_pop(clipped_vertices_count) AS vertices_count_sd,
+                                                                                         var_pop(clipped_vertices_count) AS vertices_count_var,
                                                                                          min(complexity) AS complexity_min,
                                                                                          percentile_cont(0.5) WITHIN GROUP ( ORDER BY complexity ) AS complexity_median,
                                                                                          avg(complexity) AS complexity_mean,
@@ -109,14 +113,14 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_{{agg_level}}_{{ra
                                                                                          max(oriented_mbr_width) AS mbr_width_max,
                                                                                          stddev_pop(oriented_mbr_width) AS mbr_width_sd,
                                                                                          var_pop(oriented_mbr_width) AS mbr_width_var,
-                                                                                         min(oriented_mbr_area) AS mbr_area_min,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY oriented_mbr_area ) AS mbr_area_median,
-                                                                                         avg(oriented_mbr_area) AS mbr_area_mean,
-                                                                                         max(oriented_mbr_area) AS mbr_area_max,
-                                                                                         sum(oriented_mbr_area) AS mbr_area_sum,
-                                                                                         sum(oriented_mbr_area) / {{agg_area}} AS mbr_area_sum_normalised,
-                                                                                         stddev_pop(oriented_mbr_area) AS mbr_area_sd,
-                                                                                         var_pop(oriented_mbr_area) AS mbr_area_var,
+                                                                                         min(clipped_oriented_mbr_area) AS mbr_area_min,
+                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY clipped_oriented_mbr_area ) AS mbr_area_median,
+                                                                                         avg(clipped_oriented_mbr_area) AS mbr_area_mean,
+                                                                                         max(clipped_oriented_mbr_area) AS mbr_area_max,
+                                                                                         sum(clipped_oriented_mbr_area) AS mbr_area_sum,
+                                                                                         sum(clipped_oriented_mbr_area) / {{agg_area}} AS mbr_area_sum_normalised,
+                                                                                         stddev_pop(clipped_oriented_mbr_area) AS mbr_area_sd,
+                                                                                         var_pop(clipped_oriented_mbr_area) AS mbr_area_var,
                                                                                          min("building:levels") AS "building:levels_min",
                                                                                          percentile_cont(0.5) WITHIN GROUP ( ORDER BY "building:levels" ) AS "building:levels_median",
                                                                                          avg("building:levels") AS "building:levels_mean",
@@ -148,7 +152,7 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_{{agg_level}}_{{ra
                                                                                          stddev_pop(year_of_construction) AS year_of_construction_sd,
                                                                                          var_pop(year_of_construction) AS year_of_construction_var
                                                                                      FROM
-                                                                                         {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} bga {{join_clause}}
+                                                                                         {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}} bga {{join_clause}}
                                                                                      GROUP BY
                                                                                          {{agg_columns}},
                                                                                          {{agg_geom}},
@@ -196,6 +200,7 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_{{agg_level}}_{{ra
                                                                                 WHEN height_mean IS NOT NULL
                                                                                     THEN percent_rank() OVER ( ORDER BY height_mean )
                                                                             END AS height_mean_pct_rnk,
+                                                                            height_weighted_mean,
                                                                             ratio_height_to_footprint_area_min,
                                                                             ratio_height_to_footprint_area_median,
                                                                             ratio_height_to_footprint_area_mean,
@@ -444,3 +449,17 @@ CREATE TABLE {{gbmi_schema}}.agg_buildings_geom_indicators_by_{{agg_level}}_{{ra
                                                                             agg0
                                                                         ORDER BY {{order_columns}}
                                                                         );
+
+
+-- MATERIALIZED VIEW FOR DEBUGGING
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}}_duplicates CASCADE;
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}}_duplicates AS
+    SELECT
+        ({{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}}.*)::text,
+        count(*)
+    FROM
+        {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}}
+    GROUP BY
+        {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}}.*
+    HAVING count(*) > 1;

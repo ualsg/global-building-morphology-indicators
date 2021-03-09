@@ -77,6 +77,29 @@ class QueryParamsExpander:
         except Exception as e:
             raise QueryParamsExpanderException(e)
 
+    def _expand_c_misc_params(self) -> List[dict]:
+        params_list = list()
+        if "raster_names" in self.params.keys() and len(self.params["raster_names"]) == 0:
+            raise QueryParamsExpanderException(
+                "`raster_names` cannot be an empty list. Please define at least one raster.")
+
+        if "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) == 0:
+            raise QueryParamsExpanderException("`agg_levels` cannot be an empty list. Please define at least one set of parameters for at least one agg_level.")
+
+        try:
+            for dict_a in self.params["raster_names"]:
+                for dict_b in self.params["agg_levels"]:
+                    a = dict(dict_a, **dict_b)
+                    for k, v in self.params.items():
+                        if type(v) is str:
+                            a[k] = v
+                    params_list.append(a)
+
+            return params_list
+        except Exception as e:
+            raise QueryParamsExpanderException(e)
+
+
     def run(self):
         default_err = "No matching expansion function."
         func_name = '_expand_' + str(self.key).replace('-', '_') + '_params'

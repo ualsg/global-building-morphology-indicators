@@ -87,10 +87,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} AS (
                                          "cell_population",{% endif %}
                                          "cell_country_official_name",
                                          "cell_country_code2",
-                                         "cell_country_code3",
-                                         "clipped_way",
-                                         st_area(clipped_way::geography) AS "clipped_bldg_area",
-                                         st_perimeter(clipped_way::geography) AS "clipped_bldg_perimeter"
+                                         "cell_country_code3"
                                      FROM
                                          {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}
                                      );
@@ -105,3 +102,17 @@ CREATE INDEX buildings_geom_indicators_by_{{raster_name}}_centroid_spgist ON {{g
 CREATE INDEX buildings_geom_indicators_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} USING SPGIST (way);
 
 VACUUM ANALYZE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}};
+
+
+-- MATERIALIZED VIEW FOR DEBUGGING
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}_duplicates CASCADE;
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}_duplicates AS
+    SELECT
+        ({{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}.*)::text,
+        count(*)
+    FROM
+        {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}
+    GROUP BY
+        {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}.*
+    HAVING count(*) > 1;
