@@ -38,10 +38,8 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                                          ep,
                                                          st_makeline(sp, ep) AS line,
                                                          st_length(st_makeline(sp, ep)::geography) AS line_length,
-                                                                 max(st_length(st_makeline(sp, ep)::geography))
-                                                                 OVER (PARTITION BY osm_id) AS "max_length",
-                                                                 min(st_length(st_makeline(sp, ep)::geography))
-                                                                 OVER (PARTITION BY osm_id) AS "min_length",
+                                                         MAX(st_length(st_makeline(sp, ep)::geography)) OVER (PARTITION BY osm_id, way, way_centroid) AS "max_length",
+                                                         MIN(st_length(st_makeline(sp, ep)::geography)) OVER (PARTITION BY osm_id, way, way_centroid) AS "min_length",
                                                          degrees(st_azimuth(sp, ep)) AS azimuth
                                                      FROM
                                                          pointsets
