@@ -36,10 +36,8 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
                                                          ep,
                                                          st_makeline(sp, ep) AS line,
                                                          st_length(st_makeline(sp, ep)::geography) AS line_length,
-                                                                 max(st_length(st_makeline(sp, ep)::geography))
-                                                                 OVER (PARTITION BY osm_id) AS "max_length",
-                                                                 min(st_length(st_makeline(sp, ep)::geography))
-                                                                 OVER (PARTITION BY osm_id) AS "min_length",
+                                                         max(st_length(st_makeline(sp, ep)::geography)) OVER (PARTITION BY osm_id, way, way_centroid) AS "max_length",
+                                                         min(st_length(st_makeline(sp, ep)::geography)) OVER (PARTITION BY osm_id, way, way_centroid) AS "min_length",
                                                          degrees(st_azimuth(sp, ep)) AS azimuth
                                                      FROM
                                                          pointsets),
@@ -48,13 +46,15 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
                                                                          osm_id,
                                                                          way,
                                                                          way_centroid,
-                                                                         max_length AS oriented_mbr_length,
-                                                                         min_length AS oriented_mbr_width,
+                                                                         max_length AS "mbr_length",
+                                                                         min_length AS "mbr_width",
                                                                          CASE
                                                                              WHEN azimuth > 90 AND azimuth < 180
                                                                                  THEN azimuth + 180
                                                                              WHEN azimuth > 180 AND azimuth < 270
                                                                                  THEN azimuth - 180
+                                                                             WHEN azimuth = 180 OR azimuth = 360
+                                                                                 THEN 0
                                                                              ELSE azimuth
                                                                          END AS azimuth
                                                                      FROM
@@ -69,8 +69,8 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
                                                                          calc_count_vertices AS vertices_count,
                                                                          calc_way_area AS footprint_area,
                                                                          calc_perimeter AS perimeter,
-                                                                         oriented_mbr,
-                                                                         oriented_mbr_area,
+                                                                         oriented_mbr AS mbr,
+                                                                         oriented_mbr_area AS mbr_area,
                                                                          is_residential,
                                                                          CASE
                                                                              WHEN "height" IS NULL AND "building:levels" IS NOT NULL AND "building:levels" > 0
@@ -119,10 +119,10 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
                                                   bldg.vertices_count,
                                                   bldg.footprint_area,
                                                   bldg.perimeter,
-                                                  bldg.oriented_mbr,
-                                                  bldg.oriented_mbr_area,
-                                                  bma.oriented_mbr_length,
-                                                  bma.oriented_mbr_width,
+                                                  bldg.mbr,
+                                                  bldg.mbr_area,
+                                                  bma.mbr_length,
+                                                  bma.mbr_width,
                                                   bma.azimuth,
                                                   bldg.is_residential,
                                                   bldg."height",
@@ -131,13 +131,13 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
                                                       WHEN bldg."height" IS NOT NULL AND bldg.footprint_area > 0
                                                           THEN bldg."height" * 1.0 / bldg.footprint_area
                                                   END AS "ratio_height_to_footprint_area",
-                                                  bldg.clipped_bldg_area * bldg."building:levels" AS est_floor_area,
-                                                  bldg.clipped_bldg_perimeter * bldg."height" AS est_wall_area,
-                                                  (bldg.clipped_bldg_perimeter * bldg."height") + bldg.clipped_bldg_area AS est_envelope_area,
-                                                  bldg.clipped_bldg_area * bldg."height" AS est_volume,
+                                                  bldg.clipped_bldg_area * bldg."building:levels" AS floor_area,
+                                                  bldg.clipped_bldg_perimeter * bldg."height" AS wall_area,
+                                                  (bldg.clipped_bldg_perimeter * bldg."height") + bldg.clipped_bldg_area AS envelope_area,
+                                                  bldg.clipped_bldg_area * bldg."height" AS volume,
                                                   bldg.compactness,
                                                   bldg.complexity,
-                                                  sqrt( bldg.footprint_area / bldg.oriented_mbr_area ) * ( bma.oriented_mbr_length / bldg.perimeter ) AS equivalent_rectangular_index,
+                                                  sqrt( bldg.footprint_area / bldg.mbr_area ) * ( bma.mbr_length / bldg.perimeter ) AS equivalent_rectangular_index,
                                                   bldg.year_of_construction,
                                                   bldg.start_date,
                                                   bldg."cell_id",
@@ -177,13 +177,13 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
                                         percent_rank() OVER (ORDER BY footprint_area) AS footprint_area_pct_rnk,
                                         perimeter,
                                         percent_rank() OVER (ORDER BY perimeter) AS perimeter_pct_rnk,
-                                        oriented_mbr,
-                                        oriented_mbr_area,
-                                        percent_rank() OVER (ORDER BY oriented_mbr_area) AS oriented_mbr_area_pct_rnk,
-                                        oriented_mbr_length,
-                                        percent_rank() OVER (ORDER BY oriented_mbr_length) AS oriented_mbr_length_pct_rnk,
-                                        oriented_mbr_width,
-                                        percent_rank() OVER (ORDER BY oriented_mbr_width) AS oriented_mbr_width_pct_rnk,
+                                        mbr,
+                                        mbr_area,
+                                        percent_rank() OVER (ORDER BY mbr_area) AS mbr_area_pct_rnk,
+                                        "mbr_length",
+                                        percent_rank() OVER (ORDER BY "mbr_length") AS mbr_length_pct_rnk,
+                                        mbr_width,
+                                        percent_rank() OVER (ORDER BY mbr_width) AS mbr_width_pct_rnk,
                                         azimuth,
                                         is_residential,
                                         "height",
@@ -199,25 +199,25 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
                                         CASE
                                             WHEN "ratio_height_to_footprint_area" IS NOT NULL THEN percent_rank() OVER (ORDER BY "ratio_height_to_footprint_area")
                                         END AS ratio_height_to_footprint_area_pct_rnk,
-                                        est_floor_area,
+                                        floor_area,
                                         CASE
-                                            WHEN est_floor_area IS NOT NULL
-                                                THEN percent_rank() OVER (ORDER BY est_floor_area)
-                                        END AS est_floor_area_pct_rnk,
-                                        est_wall_area,
+                                            WHEN floor_area IS NOT NULL
+                                                THEN percent_rank() OVER (ORDER BY floor_area)
+                                        END AS floor_area_pct_rnk,
+                                        wall_area,
                                         CASE
-                                            WHEN est_wall_area IS NOT NULL
-                                                THEN percent_rank() OVER (ORDER BY est_wall_area)
-                                        END AS est_wall_area_pct_rnk,
-                                        est_envelope_area,
+                                            WHEN wall_area IS NOT NULL
+                                                THEN percent_rank() OVER (ORDER BY wall_area)
+                                        END AS wall_area_pct_rnk,
+                                        envelope_area,
                                         CASE
-                                            WHEN est_envelope_area IS NOT NULL
-                                                THEN percent_rank() OVER (ORDER BY est_wall_area)
-                                        END AS est_envelope_area_pct_rnk,
-                                        est_volume,
+                                            WHEN envelope_area IS NOT NULL
+                                                THEN percent_rank() OVER (ORDER BY envelope_area)
+                                        END AS envelope_area_pct_rnk,
+                                        volume,
                                         CASE
-                                            WHEN est_volume IS NOT NULL THEN percent_rank() OVER (ORDER BY est_volume)
-                                        END AS est_volume_pct_rnk,
+                                            WHEN volume IS NOT NULL THEN percent_rank() OVER (ORDER BY volume)
+                                        END AS volume_pct_rnk,
                                         compactness,
                                         CASE
                                             WHEN compactness IS NOT NULL THEN percent_rank() OVER (ORDER BY compactness)
