@@ -49,13 +49,15 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                                                          osm_id,
                                                                          way,
                                                                          way_centroid,
-                                                                         max_length AS oriented_mbr_length,
-                                                                         min_length AS oriented_mbr_width,
+                                                                         max_length AS "mbr_length",
+                                                                         min_length AS "mbr_width",
                                                                          CASE
                                                                              WHEN azimuth > 90 AND azimuth < 180
                                                                                  THEN azimuth + 180
                                                                              WHEN azimuth > 180 AND azimuth < 270
                                                                                  THEN azimuth - 180
+                                                                             WHEN azimuth = 180 OR azimuth = 360
+                                                                                 THEN 0
                                                                              ELSE azimuth
                                                                          END AS azimuth
                                                                      FROM
@@ -71,8 +73,8 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                                                          calc_count_vertices AS vertices_count,
                                                                          calc_way_area AS footprint_area,
                                                                          calc_perimeter AS perimeter,
-                                                                         oriented_mbr,
-                                                                         oriented_mbr_area,
+                                                                         oriented_mbr AS mbr,
+                                                                         oriented_mbr_area AS mbr_area,
                                                                          is_residential,
                                                                          CASE
                                                                              WHEN "height" IS NULL AND "building:levels" IS NOT NULL AND "building:levels" > 0
@@ -113,10 +115,10 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                          bldg.vertices_count,
                                          bldg.footprint_area,
                                          bldg.perimeter,
-                                         bldg.oriented_mbr,
-                                         bldg.oriented_mbr_area,
-                                         bma.oriented_mbr_length,
-                                         bma.oriented_mbr_width,
+                                         bldg.mbr,
+                                         bldg.mbr_area,
+                                         bma.mbr_length,
+                                         bma.mbr_width,
                                          bma.azimuth,
                                          bldg.is_residential,
                                          bldg."height",
@@ -125,13 +127,13 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                              WHEN bldg."height" IS NOT NULL AND bldg.footprint_area > 0
                                                  THEN bldg."height" * 1.0 / bldg.footprint_area
                                          END AS "ratio_height_to_footprint_area",
-                                         bldg.footprint_area * bldg."building:levels" AS est_floor_area,
-                                         bldg.perimeter * bldg."height" AS est_wall_area,
-                                         (bldg.perimeter * bldg."height") + bldg.footprint_area AS est_envelope_area,
-                                         bldg.footprint_area * bldg."height" AS est_volume,
+                                         bldg.footprint_area * bldg."building:levels" AS floor_area,
+                                         bldg.perimeter * bldg."height" AS wall_area,
+                                         (bldg.perimeter * bldg."height") + bldg.footprint_area AS envelope_area,
+                                         bldg.footprint_area * bldg."height" AS volume,
                                          bldg.compactness,
                                          bldg.complexity,
-                                         sqrt( bldg.footprint_area / bldg.oriented_mbr_area ) * ( bma.oriented_mbr_length / bldg.perimeter ) AS equivalent_rectangular_index,
+                                         sqrt( bldg.footprint_area / bldg.mbr_area ) * ( bma.mbr_length / bldg.perimeter ) AS equivalent_rectangular_index,
                                          bldg.year_of_construction,
                                          bldg.start_date,
                                          "cell_id",

@@ -12,13 +12,13 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} AS (
                                          percent_rank() OVER (ORDER BY footprint_area) AS footprint_area_pct_rnk,
                                          perimeter,
                                          percent_rank() OVER (ORDER BY perimeter) AS perimeter_pct_rnk,
-                                         oriented_mbr,
-                                         oriented_mbr_area,
-                                         percent_rank() OVER (ORDER BY oriented_mbr_area) AS oriented_mbr_area_pct_rnk,
-                                         oriented_mbr_length,
-                                         percent_rank() OVER (ORDER BY oriented_mbr_length) AS oriented_mbr_length_pct_rnk,
-                                         oriented_mbr_width,
-                                         percent_rank() OVER (ORDER BY oriented_mbr_width) AS oriented_mbr_width_pct_rnk,
+                                         mbr,
+                                         mbr_area,
+                                         percent_rank() OVER (ORDER BY mbr_area) AS mbr_area_pct_rnk,
+                                         "mbr_length",
+                                         percent_rank() OVER (ORDER BY "mbr_length") AS mbr_length_pct_rnk,
+                                         mbr_width,
+                                         percent_rank() OVER (ORDER BY "mbr_width") AS mbr_width_pct_rnk,
                                          azimuth,
                                          is_residential,
                                          "height",
@@ -34,25 +34,25 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} AS (
                                          CASE
                                              WHEN "ratio_height_to_footprint_area" IS NOT NULL THEN percent_rank() OVER (ORDER BY "ratio_height_to_footprint_area")
                                          END AS ratio_height_to_footprint_area_pct_rnk,
-                                         est_floor_area,
+                                         floor_area,
                                          CASE
-                                             WHEN est_floor_area IS NOT NULL
-                                                 THEN percent_rank() OVER (ORDER BY est_floor_area)
-                                         END AS est_floor_area_pct_rnk,
-                                         est_wall_area,
+                                             WHEN floor_area IS NOT NULL
+                                                 THEN percent_rank() OVER (ORDER BY floor_area)
+                                         END AS floor_area_pct_rnk,
+                                         wall_area,
                                          CASE
-                                             WHEN est_wall_area IS NOT NULL
-                                                 THEN percent_rank() OVER (ORDER BY est_wall_area)
-                                         END AS est_wall_area_pct_rnk,
-                                         est_envelope_area,
+                                             WHEN wall_area IS NOT NULL
+                                                 THEN percent_rank() OVER (ORDER BY wall_area)
+                                         END AS wall_area_pct_rnk,
+                                         envelope_area,
                                          CASE
-                                             WHEN est_envelope_area IS NOT NULL
-                                                 THEN percent_rank() OVER (ORDER BY est_wall_area)
-                                         END AS est_envelope_area_pct_rnk,
-                                         est_volume,
+                                             WHEN envelope_area IS NOT NULL
+                                                 THEN percent_rank() OVER (ORDER BY envelope_area)
+                                         END AS envelope_area_pct_rnk,
+                                         volume,
                                          CASE
-                                             WHEN est_volume IS NOT NULL THEN percent_rank() OVER (ORDER BY est_volume)
-                                         END AS est_volume_pct_rnk,
+                                             WHEN volume IS NOT NULL THEN percent_rank() OVER (ORDER BY volume)
+                                         END AS volume_pct_rnk,
                                          compactness,
                                          CASE
                                              WHEN compactness IS NOT NULL THEN percent_rank() OVER (ORDER BY compactness)
