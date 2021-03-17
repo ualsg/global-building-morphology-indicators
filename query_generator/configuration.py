@@ -11,6 +11,7 @@ class ConfigKeys:
     a_planet_db = "a-planet-db"
     host_address = "host_address"
     superuser = "superuser"
+    databases = "databases"
     db_name = "db_name"
     db_schema = "db_schema"
     gbmi_schema = "gbmi_schema"

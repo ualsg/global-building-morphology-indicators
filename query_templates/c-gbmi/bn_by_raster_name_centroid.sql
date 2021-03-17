@@ -1,6 +1,10 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} CASCADE;
+-- MATERIALIZED VIEW FOR DEBUGGING
+-- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.bn_by_{{raster_name}}_centroid_duplicates CASCADE;
+-- DROP TABLE IF EXISTS {{gbmi_schema}}.bn_by_{{raster_name}}_centroid CASCADE;
 
-CREATE TABLE {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} AS (
+
+
+CREATE TABLE {{gbmi_schema}}.bn_by_{{raster_name}}_centroid AS (
                                     SELECT DISTINCT
                                         bldg1."osm_id" AS osm_id1,
                                         bldg1."way" AS way1,
@@ -33,32 +37,33 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} AS (
                                                                     SELECT DISTINCT osm_id, way, way_centroid, calc_way_area, height
                                                                     FROM {{gbmi_schema}}.buildings_by_{{raster_name}}
                                                                     ) AS bldg2
-                                    WHERE ST_DWITHIN(bldg1.way_centroid, bldg2.way_centroid, 100) AND NOT ST_Equals(bldg1."way"::geometry, bldg2."way"::geometry)
-                                    ORDER BY cell_country, cell_admin_div1, cell_admin_div2, cell_admin_div3, cell_admin_div4, cell_admin_div5, osm_id1, osm_id2, st_distance(bldg1.way_centroid, bldg2.way_centroid)
+                                    WHERE ST_DWITHIN(bldg1.way_centroid, bldg2.way_centroid, {% if limit_buffer %}{{limit_buffer}}{% else %}100{% endif %}) AND NOT ST_Equals(bldg1."way"::geometry, bldg2."way"::geometry)
                                     );
 
 
 
 
-CREATE INDEX buildings_neighbours_by_{{raster_name}}_osm_id ON {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}(osm_id1);
+CREATE INDEX bn_by_{{raster_name}}_centroid_osm_id ON {{gbmi_schema}}.bn_by_{{raster_name}}_centroid(osm_id1);
 
-CREATE INDEX buildings_neighbours_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} USING SPGIST (way_centroid1);
+CREATE INDEX bn_by_{{raster_name}}_centroid_centroid_spgist ON {{gbmi_schema}}.bn_by_{{raster_name}}_centroid USING SPGIST (way_centroid1);
 
-CREATE INDEX buildings_neighbours_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}} USING SPGIST (way1);
+CREATE INDEX bn_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.bn_by_{{raster_name}}_centroid USING SPGIST (way1);
 
-VACUUM ANALYZE {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}};
+VACUUM ANALYZE {{gbmi_schema}}.bn_by_{{raster_name}}_centroid;
 
 
 
--- MATERIALIZED VIEW FOR DEBUGGING
-DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}_duplicates CASCADE;
+/*
+-- This is to troubleshoot whether joints and building data are created correctly
 
-CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}_duplicates AS
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.bn_by_{{raster_name}}_centroid_duplicates AS
     SELECT
-        ({{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}.*)::text,
+        ({{gbmi_schema}}.bn_by_{{raster_name}}_centroid.*)::text,
         count(*)
     FROM
-        {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}
+        {{gbmi_schema}}.bn_by_{{raster_name}}_centroid
     GROUP BY
-        {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}.*
+        {{gbmi_schema}}.bn_by_{{raster_name}}_centroid.*
     HAVING count(*) > 1;
+
+ */

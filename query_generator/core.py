@@ -62,16 +62,21 @@ class QueryParamsExpander:
         if "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) == 0:
             raise QueryParamsExpanderException("`agg_levels` cannot be an empty list. Please define at least one set of parameters for at least one agg_level.")
 
+        if "databases" in self.params.keys() and len(self.params["databases"]) == 0:
+            raise QueryParamsExpanderException("`databases` cannot be an empty list. Please define at least one set of parameters for at least one agg_level.")
+
         try:
             for dict_a in self.params["raster_names"]:
                 for dict_b in self.params["buffers"]:
                     a = dict(dict_a, **dict_b)
                     for dict_c in self.params["agg_levels"]:
                         a = dict(a, **dict_c)
-                        for k, v in self.params.items():
-                            if type(v) is str:
-                                a[k] = v
-                        params_list.append(a)
+                        for dict_d in self.params["databases"]:
+                            a = dict(a, **dict_d)
+                            for k, v in self.params.items():
+                                if type(v) is str and k not in ("raster_names", "buffers", "agg_levels", "databases"):
+                                    a[k] = v
+                            params_list.append(a)
 
             return params_list
         except Exception as e:
@@ -99,6 +104,22 @@ class QueryParamsExpander:
         except Exception as e:
             raise QueryParamsExpanderException(e)
 
+    def _expand_d_export_params(self) -> List[dict]:
+        params_list = list()
+        try:
+            for dict_a in self.params["raster_names"]:
+                for dict_b in self.params["agg_levels"]:
+                    a = dict(dict_a, **dict_b)
+                    for dict_c in self.params["databases"]:
+                        a = dict(a, **dict_c)
+                        for k, v in self.params.items():
+                            if type(v) is str:
+                                a[k] = v
+                        params_list.append(a)
+
+            return params_list
+        except Exception as e:
+            raise QueryParamsExpanderException(e)
 
     def run(self):
         default_err = "No matching expansion function."

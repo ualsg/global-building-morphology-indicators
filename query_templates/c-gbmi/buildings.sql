@@ -1,4 +1,7 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.buildings CASCADE;
+-- MATERIALIZED VIEW FOR DEBUGGING
+-- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_duplicates CASCADE;
+-- DROP TABLE IF EXISTS {{gbmi_schema}}.buildings CASCADE;
+
 
 CREATE TABLE {{gbmi_schema}}.buildings AS (
                           SELECT
@@ -50,7 +53,6 @@ CREATE TABLE {{gbmi_schema}}.buildings AS (
                               tags -> 'roof:direction' AS "roof:direction",
                               tags -> 'wall' AS wall,
                               tags -> 'building:age' AS "building:age",
-                              SUBSTRING(tags -> 'year_of_construction' FROM '\d{4}')::SMALLINT AS "year_of_construction",
                               SUBSTRING(tags -> 'start_date' FROM '\d{4}')::SMALLINT AS "start_date",
                               tags -> 'osm_uid' AS osm_uid,
                               tags -> 'osm_user' AS osm_user,
@@ -73,8 +75,8 @@ VACUUM ANALYZE {{gbmi_schema}}.buildings;
 
 
 
--- MATERIALIZED VIEW FOR DEBUGGING
-DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_duplicates CASCADE;
+/*
+-- This is to troubleshoot whether joints and building data are created correctly
 
 CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_duplicates AS
     SELECT
@@ -85,3 +87,5 @@ CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_duplicates AS
     GROUP BY
         {{gbmi_schema}}.buildings.*
     HAVING count(*) > 1;
+
+ */

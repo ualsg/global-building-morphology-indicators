@@ -1,6 +1,8 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} CASCADE;
+-- MATERIALIZED VIEW FOR DEBUGGING
+-- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.bga_by_{{raster_name}}_duplicates CASCADE;
+-- DROP TABLE IF EXISTS {{gbmi_schema}}.bga_by_{{raster_name}} CASCADE;
 
-CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
+CREATE TABLE {{gbmi_schema}}.bga_by_{{raster_name}} AS (
                                      WITH dumped_mbr AS (
                                                         SELECT
                                                             osm_id,
@@ -88,7 +90,6 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                                                          END AS "building:levels",
                                                                          2.0 * sqrt(pi() * calc_way_area) / calc_perimeter AS compactness,
                                                                          calc_perimeter / sqrt(sqrt(calc_way_area)) AS complexity,
-                                                                         year_of_construction,
                                                                          start_date,
                                                                          "cell_id",
                                                                          "cell_centroid",
@@ -134,7 +135,6 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                          bldg.compactness,
                                          bldg.complexity,
                                          sqrt( bldg.footprint_area / bldg.mbr_area ) * ( bma.mbr_length / bldg.perimeter ) AS equivalent_rectangular_index,
-                                         bldg.year_of_construction,
                                          bldg.start_date,
                                          "cell_id",
                                          "cell_centroid",
@@ -157,15 +157,18 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}} AS (
                                      );
 
 
--- MATERIALIZED VIEW FOR DEBUGGING
-DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}_duplicates CASCADE;
 
-CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}_duplicates AS
+/*
+-- This is to troubleshoot whether joints and building data are created correctly
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.bga_by_{{raster_name}}_duplicates AS
     SELECT
-        ({{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}.*)::text,
+        ({{gbmi_schema}}.bga_by_{{raster_name}}.*)::text,
         count(*)
     FROM
-        {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}
+        {{gbmi_schema}}.bga_by_{{raster_name}}
     GROUP BY
-        {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}.*
+        {{gbmi_schema}}.bga_by_{{raster_name}}.*
     HAVING count(*) > 1;
+
+ */
