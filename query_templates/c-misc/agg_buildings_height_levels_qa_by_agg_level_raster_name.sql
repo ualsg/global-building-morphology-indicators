@@ -4,25 +4,25 @@ DROP TABLE IF EXISTS {{misc_schema}}.agg_buildings_height_levels_qa_by_{{agg_lev
 CREATE TABLE {{misc_schema}}.agg_buildings_height_levels_qa_by_{{agg_level}}_{{raster_name}} AS (
                                              WITH regexp_buildings AS (
                                                                       SELECT *,
-                                                                          regexp_match("height", '[+-]?((\d+\.?\d*)|(\.\d+))') AS height_regexp,
-                                                                          regexp_match("building:height", '[+-]?((\d+\.?\d*)|(\.\d+))') AS "building:height_regexp",
+                                                                          regexp_match("height"::text, '[+-]?((\d+\.?\d*)|(\.\d+))') AS height_regexp,
+                                                                          regexp_match("o_building:height"::text, '[+-]?((\d+\.?\d*)|(\.\d+))') AS "building:height_regexp",
                                                                           regexp_match(
-                                                                                  coalesce("height", "building:height"),
+                                                                                  coalesce("height"::text, "o_building:height"::text),
                                                                                   '[+-]?((\d+\.?\d*)|(\.\d+))') AS coelesce_height_regexp,
-                                                                          regexp_match(min_height, '[+-]?((\d+\.?\d*)|(\.\d+))') AS min_height_regexp,
-                                                                          regexp_match("building:min_height", '[+-]?((\d+\.?\d*)|(\.\d+))') AS "building:min_height_regexp",
+                                                                          regexp_match("min_height"::text, '[+-]?((\d+\.?\d*)|(\.\d+))') AS min_height_regexp,
+                                                                          regexp_match("building:min_height"::text, '[+-]?((\d+\.?\d*)|(\.\d+))') AS "building:min_height_regexp",
                                                                           regexp_match(
-                                                                                  coalesce("min_height", "building:min_height"),
+                                                                                  coalesce("min_height"::text, "building:min_height"::text),
                                                                                   '[+-]?((\d+\.?\d*)|(\.\d+))') AS coelesce_min_height_regexp,
-                                                                          regexp_match("building:levels", '[+-]?((\d+\.?\d*)|(\.\d+))') AS "building:levels_regexp",
-                                                                          regexp_match(levels, '[+-]?((\d+\.?\d*)|(\.\d+))') AS levels_regexp,
+                                                                          regexp_match("building:levels"::text, '[+-]?((\d+\.?\d*)|(\.\d+))') AS "building:levels_regexp",
+                                                                          regexp_match("o_levels"::text, '[+-]?((\d+\.?\d*)|(\.\d+))') AS levels_regexp,
                                                                           regexp_match(
-                                                                                  coalesce("building:levels", "levels"),
+                                                                                  coalesce("building:levels"::text, "o_levels"::text),
                                                                                   '[+-]?((\d+\.?\d*)|(\.\d+))') AS "coelesce_building:levels_regexp",
-                                                                          regexp_match("building:min_level", '[+-]?((\d+\.?\d*)|(\.\d+))') AS "building:min_level_regexp",
-                                                                          regexp_match("min_level", '[+-]?((\d+\.?\d*)|(\.\d+))') AS "min_level_regexp",
+                                                                          regexp_match("building:min_level"::text, '[+-]?((\d+\.?\d*)|(\.\d+))') AS "building:min_level_regexp",
+                                                                          regexp_match("min_level"::text, '[+-]?((\d+\.?\d*)|(\.\d+))') AS "min_level_regexp",
                                                                           regexp_match(
-                                                                                  coalesce("building:min_level", "min_level"),
+                                                                                  coalesce("building:min_level"::text, "min_level"),
                                                                                   '[+-]?((\d+\.?\d*)|(\.\d+))') AS "coelesce_building:min_level_regexp"
                                                                       FROM
                                                                           {{gbmi_schema}}.buildings_by_{{raster_name}}
@@ -34,13 +34,13 @@ CREATE TABLE {{misc_schema}}.agg_buildings_height_levels_qa_by_{{agg_level}}_{{r
                                                                     count(*) AS building_count,
                                                                     count(*) FILTER (WHERE "height" IS NOT NULL) AS height_count,
                                                                     count(*) FILTER (WHERE "height" IS NOT NULL AND height_regexp IS NOT NULL) AS height_valid_count,                               -- somewhat valid (ignoring letters and characters)
-                                                                    count(*) FILTER (WHERE "building:height" IS NOT NULL) AS "building:height_count",
+                                                                    count(*) FILTER (WHERE "o_building:height" IS NOT NULL) AS "building:height_count",
                                                                             count(*)
-                                                                            FILTER (WHERE "building:height" IS NOT NULL AND "building:height_regexp" IS NOT NULL) AS "building:height_valid_count", -- somewhat valid (ignoring letters and characters)
+                                                                            FILTER (WHERE "o_building:height" IS NOT NULL AND "building:height_regexp" IS NOT NULL) AS "building:height_valid_count", -- somewhat valid (ignoring letters and characters)
                                                                             count(*)
-                                                                            FILTER (WHERE coalesce("height", "building:height") IS NOT NULL) AS "coelesce_height_count",
+                                                                            FILTER (WHERE coalesce("height"::text, "o_building:height"::text) IS NOT NULL) AS "coelesce_height_count",
                                                                             count(*) FILTER (WHERE
-                                                                            coalesce("height", "building:height") IS NOT NULL AND
+                                                                            coalesce("height"::text, "o_building:height"::text) IS NOT NULL AND
                                                                             "coelesce_height_regexp" IS NOT NULL) AS "coelesce_height_valid_count",
                                                                     count(*) FILTER (WHERE min_height IS NOT NULL) AS min_height_count,
                                                                             count(*)
@@ -57,12 +57,12 @@ CREATE TABLE {{misc_schema}}.agg_buildings_height_levels_qa_by_{{agg_level}}_{{r
                                                                     count(*) FILTER (WHERE "building:levels" IS NOT NULL) AS "building:levels_count",
                                                                             count(*)
                                                                             FILTER (WHERE "building:levels" IS NOT NULL AND "building:levels_regexp" IS NOT NULL) AS "building:levels_valid_count",
-                                                                    count(*) FILTER (WHERE "levels" IS NOT NULL) AS "levels_count",
-                                                                    count(*) FILTER (WHERE "levels" IS NOT NULL AND levels_regexp IS NOT NULL) AS "levels_valid_count",
+                                                                    count(*) FILTER (WHERE "o_levels" IS NOT NULL) AS "levels_count",
+                                                                    count(*) FILTER (WHERE "o_levels" IS NOT NULL AND levels_regexp IS NOT NULL) AS "levels_valid_count",
                                                                             count(*)
-                                                                            FILTER (WHERE coalesce("building:levels", "levels") IS NOT NULL) AS "coelesce_building:levels_count",
+                                                                            FILTER (WHERE coalesce("o_building:levels"::text, "o_levels"::text) IS NOT NULL) AS "coelesce_building:levels_count",
                                                                             count(*) FILTER (WHERE
-                                                                            coalesce("building:levels", "levels") IS NOT NULL AND
+                                                                            coalesce("o_building:levels"::text, "o_levels"::text) IS NOT NULL AND
                                                                             "coelesce_building:levels_regexp" IS NOT NULL) AS "coelesce_building:levels_valid_count",
                                                                     count(*) FILTER (WHERE "building:min_level" IS NOT NULL) AS "building:min_level_count",
                                                                             count(*) FILTER (WHERE

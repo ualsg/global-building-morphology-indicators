@@ -1,6 +1,9 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} CASCADE;
+-- MATERIALIZED VIEW FOR DEBUGGING
+-- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.bgi_by_{{raster_name}}_duplicates CASCADE;
+-- DROP TABLE IF EXISTS {{gbmi_schema}}.bgi_by_{{raster_name}} CASCADE;
 
-CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} AS (
+
+CREATE TABLE {{gbmi_schema}}.bgi_by_{{raster_name}} AS (
                                      SELECT
                                          osm_id,
                                          tags,
@@ -64,12 +67,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} AS (
                                          equivalent_rectangular_index,
                                          CASE
                                              WHEN equivalent_rectangular_index IS NOT NULL THEN percent_rank() OVER (ORDER BY equivalent_rectangular_index)
-                                         END AS cequivalent_rectangular_index_pct_rnk,
-                                         year_of_construction,
-                                         CASE
-                                             WHEN year_of_construction IS NOT NULL
-                                                 THEN percent_rank() OVER (ORDER BY year_of_construction)
-                                         END AS year_of_construction_pct_rnk,
+                                         END AS equivalent_rectangular_index_pct_rnk,
                                          start_date,
                                          CASE
                                              WHEN start_date IS NOT NULL THEN percent_rank() OVER (ORDER BY start_date)
@@ -89,30 +87,33 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} AS (
                                          "cell_country_code2",
                                          "cell_country_code3"
                                      FROM
-                                         {{gbmi_schema}}.buildings_geom_attributes_by_{{raster_name}}
+                                         {{gbmi_schema}}.bga_by_{{raster_name}}
                                      );
 
 
 
 
-CREATE INDEX buildings_geom_indicators_by_{{raster_name}}_osm_id ON {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}(osm_id);
+CREATE INDEX bgi_by_{{raster_name}}_osm_id ON {{gbmi_schema}}.bgi_by_{{raster_name}}(osm_id);
 
-CREATE INDEX buildings_geom_indicators_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} USING SPGIST (way_centroid);
+CREATE INDEX bgi_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.bgi_by_{{raster_name}} USING SPGIST (way_centroid);
 
-CREATE INDEX buildings_geom_indicators_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}} USING SPGIST (way);
+CREATE INDEX bgi_by_{{raster_name}}_spgist ON {{gbmi_schema}}.bgi_by_{{raster_name}} USING SPGIST (way);
 
-VACUUM ANALYZE {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}};
+VACUUM ANALYZE {{gbmi_schema}}.bgi_by_{{raster_name}};
 
 
--- MATERIALIZED VIEW FOR DEBUGGING
-DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}_duplicates CASCADE;
 
-CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}_duplicates AS
+/*
+-- This is to troubleshoot whether joints and building data are created correctly
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.bgi_by_{{raster_name}}_duplicates AS
     SELECT
-        ({{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}.*)::text,
+        ({{gbmi_schema}}.bgi_by_{{raster_name}}.*)::text,
         count(*)
     FROM
-        {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}
+        {{gbmi_schema}}.bgi_by_{{raster_name}}
     GROUP BY
-        {{gbmi_schema}}.buildings_geom_indicators_by_{{raster_name}}.*
+        {{gbmi_schema}}.bgi_by_{{raster_name}}.*
     HAVING count(*) > 1;
+
+ */

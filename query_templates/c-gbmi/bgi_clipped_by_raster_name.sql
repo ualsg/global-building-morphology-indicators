@@ -1,6 +1,9 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}} CASCADE;
+-- MATERIALIZED VIEW FOR DEBUGGING
+-- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.bgi_clipped_by_{{raster_name}}_duplicates CASCADE;
+-- DROP TABLE IF EXISTS {{gbmi_schema}}.bgi_clipped_by_{{raster_name}} CASCADE;
 
-CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}} AS (
+
+CREATE TABLE {{gbmi_schema}}.bgi_clipped_by_{{raster_name}} AS (
                                     WITH dumped_mbr AS (
                                                         SELECT
                                                             osm_id,
@@ -84,7 +87,6 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
                                                                          END AS "building:levels",
                                                                          2.0 * sqrt(pi() * calc_way_area) / calc_perimeter AS compactness,
                                                                          calc_perimeter / sqrt(sqrt(calc_way_area)) AS complexity,
-                                                                         year_of_construction,
                                                                          start_date,
                                                                          "cell_id",
                                                                          "cell_centroid",
@@ -138,7 +140,6 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
                                                   bldg.compactness,
                                                   bldg.complexity,
                                                   sqrt( bldg.footprint_area / bldg.mbr_area ) * ( bma.mbr_length / bldg.perimeter ) AS equivalent_rectangular_index,
-                                                  bldg.year_of_construction,
                                                   bldg.start_date,
                                                   bldg."cell_id",
                                                   bldg."cell_centroid",
@@ -229,12 +230,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
                                         equivalent_rectangular_index,
                                         CASE
                                             WHEN equivalent_rectangular_index IS NOT NULL THEN percent_rank() OVER (ORDER BY equivalent_rectangular_index)
-                                        END AS cequivalent_rectangular_index_pct_rnk,
-                                        year_of_construction,
-                                        CASE
-                                            WHEN year_of_construction IS NOT NULL
-                                                THEN percent_rank() OVER (ORDER BY year_of_construction)
-                                        END AS year_of_construction_pct_rnk,
+                                        END AS equivalent_rectangular_index_pct_rnk,
                                         start_date,
                                         CASE
                                             WHEN start_date IS NOT NULL THEN percent_rank() OVER (ORDER BY start_date)
@@ -267,24 +263,27 @@ CREATE TABLE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}
 
 
 
-CREATE INDEX buildings_geom_indicators_clipped_by_{{raster_name}}_osm_id ON {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}}(osm_id);
+CREATE INDEX bgi_clipped_by_{{raster_name}}_osm_id ON {{gbmi_schema}}.bgi_clipped_by_{{raster_name}}(osm_id);
 
-CREATE INDEX buildings_geom_indicators_clipped_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}} USING SPGIST (way_centroid);
+CREATE INDEX bgi_clipped_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.bgi_clipped_by_{{raster_name}} USING SPGIST (way_centroid);
 
-CREATE INDEX buildings_geom_indicators_clipped_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}} USING SPGIST (way);
+CREATE INDEX bgi_clipped_by_{{raster_name}}_spgist ON {{gbmi_schema}}.bgi_clipped_by_{{raster_name}} USING SPGIST (way);
 
-VACUUM ANALYZE {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}};
+VACUUM ANALYZE {{gbmi_schema}}.bgi_clipped_by_{{raster_name}};
 
 
--- MATERIALIZED VIEW FOR DEBUGGING
-DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}}_duplicates CASCADE;
 
-CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}}_duplicates AS
+/*
+-- This is to troubleshoot whether joints and building data are created correctly
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.bgi_clipped_by_{{raster_name}}_duplicates AS
     SELECT
-        ({{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}}.*)::text,
+        ({{gbmi_schema}}.bgi_clipped_by_{{raster_name}}.*)::text,
         count(*)
     FROM
-        {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}}
+        {{gbmi_schema}}.bgi_clipped_by_{{raster_name}}
     GROUP BY
-        {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}}.*
+        {{gbmi_schema}}.bgi_clipped_by_{{raster_name}}.*
     HAVING count(*) > 1;
+
+ */

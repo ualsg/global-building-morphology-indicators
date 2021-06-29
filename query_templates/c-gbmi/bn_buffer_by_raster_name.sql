@@ -1,14 +1,20 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} CASCADE;
+-- MATERIALIZED VIEW FOR DEBUGGING
+-- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}_duplicates CASCADE;
+-- DROP TABLE IF EXISTS {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}} CASCADE;
 
-CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} AS (
+
+
+CREATE TABLE {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}} AS (
                                                               WITH bldgs_within_{{buffer}} AS (
                                                                                        SELECT
                                                                                             *,
+                                                                                            ST_AREA(ST_Buffer("way1", {{buffer}})) AS buffer_area_{{buffer}},
+                                                                                            ST_AREA(ST_INTERSECTION(ST_Buffer("way1", {{buffer}}), "way2")) AS clipped_way_area2_{{buffer}},
                                                                                             CASE
                                                                                                 WHEN height2 IS NOT NULL AND distance > 0 THEN height2 * 1.0 / distance
                                                                                             END AS ratio_neighbour_height_to_distance
                                                                                        FROM
-                                                                                           {{gbmi_schema}}.buildings_neighbours_by_{{raster_name}}
+                                                                                           {{gbmi_schema}}.bn_by_{{raster_name}}
                                                                                        WHERE distance > 0 AND distance <= {{buffer}}
                                                                                            AND osm_id1 != osm_id2
                                                                                            AND NOT ST_Equals(way_centroid1::geometry, way_centroid2::geometry)
@@ -30,7 +36,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
                                                                                              way1,
                                                                                              way_centroid1,
                                                                                              percentile_cont(0.5) WITHIN GROUP (ORDER BY distance) AS distance_{{buffer}}_median,
-                                                                                             percentile_cont(0.5) WITHIN GROUP (ORDER BY way_area2) AS neighbour_footprint_area_{{buffer}}_median,
+                                                                                             percentile_cont(0.5) WITHIN GROUP (ORDER BY clipped_way_area2_{{buffer}}) AS neighbour_footprint_area_{{buffer}}_median,
                                                                                              percentile_cont(0.5) WITHIN GROUP (ORDER BY ratio_neighbour_height_to_distance) AS ratio_neighbour_height_to_distance_{{buffer}}_median
                                                                                          FROM
                                                                                              bldgs_within_{{buffer}}
@@ -54,6 +60,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
                                                                   bn_{{buffer}}.cell_country_official_name,
                                                                   bn_{{buffer}}.cell_country_code2,
                                                                   bn_{{buffer}}.cell_country_code3,
+                                                                  bn_{{buffer}}.buffer_area_{{buffer}},
                                                                   cn_{{buffer}}.neighbour_{{buffer}}_count,
                                                                   MIN(bn_{{buffer}}.distance)
                                                                     OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS distance_{{buffer}}_min,
@@ -72,25 +79,27 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
                                                                       WHEN AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
                                                                           THEN STDDEV_POP(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
                                                                   END AS distance_{{buffer}}_cv,
-                                                                  SUM(bn_{{buffer}}.way_area2)
+                                                                  SUM(bn_{{buffer}}.clipped_way_area2_{{buffer}})
                                                                     OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS neighbour_footprint_area_{{buffer}}_sum,
-                                                                  MIN(bn_{{buffer}}.way_area2)
+                                                                  MIN(bn_{{buffer}}.clipped_way_area2_{{buffer}})
                                                                     OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS neighbour_footprint_area_{{buffer}}_min,
-                                                                  MAX(bn_{{buffer}}.way_area2)
+                                                                  MAX(bn_{{buffer}}.clipped_way_area2_{{buffer}})
                                                                     OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS neighbour_footprint_area_{{buffer}}_max,
                                                                   md_{{buffer}}.neighbour_footprint_area_{{buffer}}_median,
-                                                                  AVG(bn_{{buffer}}.way_area2)
+                                                                  AVG(bn_{{buffer}}.clipped_way_area2_{{buffer}})
                                                                     OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS neighbour_footprint_area_{{buffer}}_mean,
-                                                                  STDDEV_POP(bn_{{buffer}}.way_area2)
+                                                                  STDDEV_POP(bn_{{buffer}}.clipped_way_area2_{{buffer}})
                                                                     OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS neighbour_footprint_area_{{buffer}}_sd,
                                                                   CASE
-                                                                      WHEN AVG(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
-                                                                          THEN VAR_POP(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
+                                                                      WHEN AVG(bn_{{buffer}}.clipped_way_area2_{{buffer}}) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
+                                                                          THEN VAR_POP(bn_{{buffer}}.clipped_way_area2_{{buffer}}) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.clipped_way_area2_{{buffer}}) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
                                                                   END AS neighbour_footprint_area_{{buffer}}_d,
                                                                   CASE
-                                                                      WHEN AVG(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
-                                                                          THEN STDDEV_POP(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
+                                                                      WHEN AVG(bn_{{buffer}}.clipped_way_area2_{{buffer}}) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
+                                                                          THEN STDDEV_POP(bn_{{buffer}}.clipped_way_area2_{{buffer}}) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.clipped_way_area2_{{buffer}}) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
                                                                   END AS neighbour_footprint_area_{{buffer}}_cv,
+                                                                  (SUM(bn_{{buffer}}.clipped_way_area2_{{buffer}})
+                                                                    OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / bn_{{buffer}}.buffer_area_{{buffer}}) AS ratio_neighbour_footprint_sum_to_buffer_{{buffer}},
                                                                   MIN(bn_{{buffer}}.ratio_neighbour_height_to_distance)
                                                                     OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS ratio_neighbour_height_to_distance_{{buffer}}_min,
                                                                   MAX(bn_{{buffer}}.ratio_neighbour_height_to_distance)
@@ -102,11 +111,11 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
                                                                     OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) AS ratio_neighbour_height_to_distance_{{buffer}}_sd,
                                                                   CASE
                                                                       WHEN AVG(bn_{{buffer}}.ratio_neighbour_height_to_distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
-                                                                          THEN VAR_POP(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
+                                                                          THEN VAR_POP(bn_{{buffer}}.ratio_neighbour_height_to_distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
                                                                   END AS ratio_neighbour_height_to_distance_{{buffer}}_d,
                                                                   CASE
                                                                       WHEN AVG(bn_{{buffer}}.ratio_neighbour_height_to_distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) > 0
-                                                                          THEN STDDEV_POP(bn_{{buffer}}.way_area2) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
+                                                                          THEN STDDEV_POP(bn_{{buffer}}.ratio_neighbour_height_to_distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1) / AVG(bn_{{buffer}}.distance) OVER (PARTITION BY bn_{{buffer}}.osm_id1, bn_{{buffer}}.way1, bn_{{buffer}}.way_centroid1)
                                                                   END AS ratio_neighbour_height_to_distance_{{buffer}}_cv
                                                               FROM
                                                                   bldgs_within_{{buffer}} bn_{{buffer}}
@@ -122,24 +131,27 @@ CREATE TABLE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} 
 
 
 
-CREATE INDEX buildings_neighbours_{{buffer}}_by_{{raster_name}}_osm_id ON {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}(osm_id);
+CREATE INDEX bn_{{buffer}}_by_{{raster_name}}_osm_id ON {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}(osm_id);
 
-CREATE INDEX buildings_neighbours_{{buffer}}_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} USING spgist(way_centroid);
+CREATE INDEX bn_{{buffer}}_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}} USING spgist(way_centroid);
 
-CREATE INDEX buildings_neighbours_{{buffer}}_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}} USING spgist(way);
+CREATE INDEX bn_{{buffer}}_by_{{raster_name}}_spgist ON {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}} USING spgist(way);
 
-VACUUM ANALYZE {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}};
+VACUUM ANALYZE {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}};
 
 
--- MATERIALIZED VIEW FOR DEBUGGING
-DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}_duplicates CASCADE;
 
-CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}_duplicates AS
+/*
+-- This is to troubleshoot whether joints and building data are created correctly
+
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}_duplicates AS
     SELECT
-        ({{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}.*)::text,
+        ({{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}.*)::text,
         count(*)
     FROM
-        {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}
+        {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}
     GROUP BY
-        {{gbmi_schema}}.buildings_neighbours_{{buffer}}_by_{{raster_name}}.*
+        {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}.*
     HAVING count(*) > 1;
+
+ */

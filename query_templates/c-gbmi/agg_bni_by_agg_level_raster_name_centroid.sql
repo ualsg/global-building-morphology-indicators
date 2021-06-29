@@ -1,10 +1,10 @@
 -- MATERIALIZED VIEW FOR DEBUGGING
--- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_duplicates CASCADE;
--- DROP TABLE IF EXISTS {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}} CASCADE;
+-- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_centroid_duplicates CASCADE;
+-- DROP TABLE IF EXISTS {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_centroid CASCADE;
 
 
 
-CREATE TABLE {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}} AS (
+CREATE TABLE {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_centroid AS (
                                                                         WITH agg0_neighbours AS (
                                                                             SELECT
                                                                                 {{agg_columns}},
@@ -121,7 +121,7 @@ CREATE TABLE {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}} AS (
                                                                                 STDDEV_POP("ratio_neighbour_height_to_distance_100_mean") AS "ratio_neighbour_height_to_distance_100_sd",
                                                                                 VAR_POP("ratio_neighbour_height_to_distance_100_mean") AS "ratio_neighbour_height_to_distance_100_var"{% endif %}
                                                                             FROM
-                                                                                {{gbmi_schema}}.buildings_indicators_by_{{raster_name}} bga {{join_clause}}
+                                                                                {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid bga {{join_clause}}
                                                                             WHERE cell_country IS NOT NULL
                                                                             GROUP BY
                                                                                 {{agg_columns}},
@@ -448,14 +448,14 @@ CREATE TABLE {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}} AS (
 /*
 -- This is to troubleshoot whether joints and building data are aggregated correctly
 
-CREATE MATERIALIZED VIEW {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_duplicates AS
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_centroid_duplicates AS
     SELECT
-        ({{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}.*)::text,
+        ({{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_centroid.*)::text,
         count(*)
     FROM
-        {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}
+        {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_centroid
     GROUP BY
-        {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}.*
+        {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_centroid.*
     HAVING count(*) > 1;
 
  */

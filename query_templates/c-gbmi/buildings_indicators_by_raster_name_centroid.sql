@@ -1,9 +1,9 @@
 -- MATERIALIZED VIEW FOR DEBUGGING
--- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_duplicates CASCADE;
--- DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_indicators_by_{{raster_name}} CASCADE;
+-- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid_duplicates CASCADE;
+-- DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid CASCADE;
 
 
-CREATE TABLE {{gbmi_schema}}.buildings_indicators_by_{{raster_name}} AS (
+CREATE TABLE {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid AS (
                                                           WITH bldg_indicators AS (
                                                                                       SELECT
                                                                                           bgi."osm_id",
@@ -147,7 +147,7 @@ CREATE TABLE {{gbmi_schema}}.buildings_indicators_by_{{raster_name}} AS (
                                                                                           bgi."cell_country_code3"
                                                                                       FROM
                                                                                           {{gbmi_schema}}.bgi_by_{{raster_name}} bgi
-                                                                                          LEFT JOIN {{gbmi_schema}}.bni_by_{{raster_name}} bni
+                                                                                          LEFT JOIN {{gbmi_schema}}.bni_by_{{raster_name}}_centroid bni
                                                                                               ON bgi.osm_id = bni.osm_id AND ST_Equals(bgi.way::geometry, bni.way::geometry)
                                                                                       )
                                                           SELECT DISTINCT * FROM bldg_indicators WHERE cell_country IS NOT NULL
@@ -155,27 +155,27 @@ CREATE TABLE {{gbmi_schema}}.buildings_indicators_by_{{raster_name}} AS (
 
 
 
-CREATE INDEX buildings_indicators_by_{{raster_name}}_osm_id ON {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}(osm_id);
+CREATE INDEX buildings_indicators_by_{{raster_name}}_centroid_osm_id ON {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid(osm_id);
 
-CREATE INDEX buildings_indicators_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.buildings_indicators_by_{{raster_name}} USING SPGIST (way_centroid);
+CREATE INDEX buildings_indicators_by_{{raster_name}}_centroid_centroid_spgist ON {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid USING SPGIST (way_centroid);
 
-CREATE INDEX buildings_indicators_by_{{raster_name}}_spgist ON {{gbmi_schema}}.buildings_indicators_by_{{raster_name}} USING SPGIST (way);
+CREATE INDEX buildings_indicators_by_{{raster_name}}_centroid_spgist ON {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid USING SPGIST (way);
 
-VACUUM ANALYZE {{gbmi_schema}}.buildings_indicators_by_{{raster_name}};
+VACUUM ANALYZE {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid;
 
 
 
 /*
 -- This is to troubleshoot whether joints and building data are created correctly
 
-CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_duplicates AS
+CREATE MATERIALIZED VIEW {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid_duplicates AS
     SELECT
-        ({{gbmi_schema}}.buildings_indicators_by_{{raster_name}}.*)::text,
+        ({{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid.*)::text,
         count(*)
     FROM
-        {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}
+        {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid
     GROUP BY
-        {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}.*
+        {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid.*
     HAVING count(*) > 1;
 
  */

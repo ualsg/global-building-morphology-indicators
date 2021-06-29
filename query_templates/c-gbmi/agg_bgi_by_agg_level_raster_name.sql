@@ -1,4 +1,7 @@
-DROP TABLE IF EXISTS {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}} CASCADE;
+-- MATERIALIZED VIEW FOR DEBUGGING
+-- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}}_duplicates CASCADE;
+-- DROP TABLE IF EXISTS {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}} CASCADE;
+
 
 CREATE TABLE {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}} AS (
                                                                             WITH agg0 AS (
@@ -144,15 +147,10 @@ CREATE TABLE {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}} AS (
                                                                                          sum(floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_sum,
                                                                                          sum(floor_area) FILTER ( WHERE is_residential IS TRUE ) / {{agg_area}} AS residential_floor_area_sum_normalised,
                                                                                          stddev_pop(floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_sd,
-                                                                                         var_pop(floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_var,
-                                                                                         min(year_of_construction) AS year_of_construction_min,
-                                                                                         percentile_cont(0.5) WITHIN GROUP ( ORDER BY year_of_construction ) AS year_of_construction_median,
-                                                                                         avg(year_of_construction) AS year_of_construction_mean,
-                                                                                         max(year_of_construction) AS year_of_construction_max,
-                                                                                         stddev_pop(year_of_construction) AS year_of_construction_sd,
-                                                                                         var_pop(year_of_construction) AS year_of_construction_var
+                                                                                         var_pop(floor_area) FILTER ( WHERE is_residential IS TRUE ) AS residential_floor_area_var
                                                                                      FROM
-                                                                                         {{gbmi_schema}}.buildings_geom_indicators_clipped_by_{{raster_name}} bga {{join_clause}}
+                                                                                         {{gbmi_schema}}.bgi_clipped_by_{{raster_name}} bga {{join_clause}}
+                                                                                     WHERE cell_country IS NOT NULL
                                                                                      GROUP BY
                                                                                          {{agg_columns}},
                                                                                          {{agg_geom}},
@@ -427,32 +425,16 @@ CREATE TABLE {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}} AS (
                                                                             CASE
                                                                                 WHEN residential_floor_area_mean IS NOT NULL
                                                                                     THEN percent_rank() OVER ( ORDER BY residential_floor_area_mean )
-                                                                            END AS residential_floor_area_mean_pct_rnk,
-                                                                            year_of_construction_min,
-                                                                            year_of_construction_median,
-                                                                            year_of_construction_mean,
-                                                                            year_of_construction_max,
-                                                                            year_of_construction_sd,
-                                                                            CASE
-                                                                                WHEN year_of_construction_mean > 0
-                                                                                    THEN year_of_construction_var / year_of_construction_mean
-                                                                            END AS year_of_construction_d,
-                                                                            CASE
-                                                                                WHEN year_of_construction_mean > 0
-                                                                                    THEN year_of_construction_sd / year_of_construction_mean
-                                                                            END AS year_of_construction_cv,
-                                                                            CASE
-                                                                                WHEN year_of_construction_mean IS NOT NULL
-                                                                                    THEN percent_rank() OVER ( ORDER BY year_of_construction_mean )
-                                                                            END AS year_of_construction_mean_pct_rnk
+                                                                            END AS residential_floor_area_mean_pct_rnk
                                                                         FROM
                                                                             agg0
                                                                         ORDER BY {{order_columns}}
                                                                         );
 
 
--- MATERIALIZED VIEW FOR DEBUGGING
-DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}}_duplicates CASCADE;
+
+/*
+-- This is to troubleshoot whether joints and building data are aggregated correctly
 
 CREATE MATERIALIZED VIEW {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}}_duplicates AS
     SELECT
@@ -463,3 +445,5 @@ CREATE MATERIALIZED VIEW {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}
     GROUP BY
         {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}}.*
     HAVING count(*) > 1;
+
+*/
