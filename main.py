@@ -13,12 +13,18 @@ overwrite = config.get_parameter("overwrite")
 output_dirname = config.get_parameter("output_dirname")
 template_dirname = config.get_parameter("template_dirname")
 params = config.get_parameter("parameters")
+common_params = params["common"]
+del params["common"]
+sections = sys.argv[1:]
+
 
 try:
     query_generator = QueryGenerator(
         template_dirname=template_dirname,
         output_dirname=output_dirname,
+        common_params=common_params,
         params=params,
+        sections=sections,
         overwrite=overwrite,
         debug_mode=debug)
     query_generator.run()
