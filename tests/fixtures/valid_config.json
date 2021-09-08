@@ -19,7 +19,7 @@
     "b-rasters-and-gadm": {
     },
     "c-analysis": {
-      "db_schema": "public",
+      "public_schema": "public",
       "raster_names": [
         {
           "raster_name": "guf"
@@ -31,7 +31,7 @@
     },
     "d-gbmi": {},
     "y-visualization": {
-      "db_schema": "public",
+      "public_schema": "public",
       "raster_names": [
         {
           "raster_name": "guf"
@@ -50,7 +50,7 @@
       ]
     },
     "z-misc": {
-      "db_schema": "public",
+      "public_schema": "public",
       "raster_names": [
         {
           "raster_name": "guf"

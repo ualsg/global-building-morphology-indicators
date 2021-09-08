@@ -5,5 +5,5 @@ query_output/**
 excl_*.sql
 temp/*
 **/__pycache__/**
-query_output/**
+query_output_old0/**
 **/*.log
