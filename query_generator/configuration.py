@@ -20,7 +20,7 @@ class ConfigKeys:
     qa_schema = "qa_schema"
     qa_script_dir = "qa_script_dir"
     base_source_dir = "base_source_dir"
-    gbmi_source_dir = "gbmi_source_dir"
+    site_source_dir = "site_source_dir"
     country_codes_dir = "country_codes_dir"
     country_codes_file = "country_codes_file"
     gadm_source_dir = "gadm_source_dir"
@@ -113,7 +113,7 @@ class QueryGeneratorConfiguration:
                             ConfigKeys.base_source_dir: {
                                 "type": "string"
                             },
-                            ConfigKeys.gbmi_source_dir: {
+                            ConfigKeys.site_source_dir: {
                                 "type": "string"
                             },
                             ConfigKeys.country_codes_dir: {
@@ -141,9 +141,10 @@ class QueryGeneratorConfiguration:
                         "required": [ConfigKeys.host_address, ConfigKeys.db_script_dir, ConfigKeys.public_schema,
                                      ConfigKeys.public_script_dir, ConfigKeys.misc_schema, ConfigKeys.misc_script_dir,
                                      ConfigKeys.gbmi_schema, ConfigKeys.gbmi_script_dir, ConfigKeys.qa_schema,
-                                     ConfigKeys.qa_script_dir, ConfigKeys.base_source_dir, ConfigKeys.gbmi_source_dir,
-                                     ConfigKeys.country_codes_dir, ConfigKeys.country_codes_file, ConfigKeys.gadm_source_dir,
-                                     ConfigKeys.gadm_source_file, ConfigKeys.gadm_target_table, ConfigKeys.export_script_dir,
+                                     ConfigKeys.qa_script_dir, ConfigKeys.base_source_dir,
+                                     ConfigKeys.country_codes_dir, ConfigKeys.country_codes_file,
+                                     ConfigKeys.site_source_dir, ConfigKeys.gadm_source_file,
+                                     ConfigKeys.gadm_target_table, ConfigKeys.export_script_dir,
                                      ConfigKeys.export_base_dir]
                     },
                     ConfigKeys.a_db_setup: {

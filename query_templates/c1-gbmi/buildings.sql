@@ -64,7 +64,7 @@ CREATE TABLE {{gbmi_schema}}.buildings AS (
                           );
 
 
-CREATE INDEX buildings_osm_id ON gbmi.buildings(osm_id);
+CREATE INDEX buildings_osm_id ON {{gbmi_schema}}.buildings(osm_id);
 
 CREATE INDEX buildings_spgist ON {{gbmi_schema}}.buildings USING spgist(way);
 

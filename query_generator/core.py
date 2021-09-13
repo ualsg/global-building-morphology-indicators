@@ -211,7 +211,7 @@ class QueryGenerator:
                 Path(dirname).mkdir(parents=mkdir, exist_ok=exist_ok)
                 return Path(dirname)
             else:
-                return None
+                return
 
     def _output_sql_file(self, output_filepath: Path, query: str, bind_params: OrderedDict):
         with open(output_filepath, 'w') as f:
