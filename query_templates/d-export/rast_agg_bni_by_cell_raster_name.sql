@@ -33,6 +33,7 @@ FROM
 DROP TABLE IF EXISTS gbmi.attr_abbr_out;
 
 
+DROP TABLE IF EXISTS gbmi.rast_agg_bni_by_cell_{{raster_name}}_attr_abbr;
 
 
 

@@ -1,7 +1,7 @@
 SET postgis.gdal_enabled_drivers = 'GTiff';
 
 -- SELECT st_gdaldrivers();
-DROP TABLE IF EXISTS gbmi.rast_agg_bgi_by_cell_{{raster_name}}_attr_abbr
+DROP TABLE IF EXISTS gbmi.rast_agg_bgi_by_cell_{{raster_name}}_attr_abbr;
 
 
 CREATE TABLE gbmi.rast_agg_bgi_by_cell_{{raster_name}}_attr_abbr AS
@@ -31,6 +31,9 @@ FROM
     gbmi.attr_abbr_out;
 
 DROP TABLE IF EXISTS gbmi.attr_abbr_out;
+
+
+DROP TABLE IF EXISTS gbmi.rast_agg_bgi_by_cell_{{raster_name}}_attr_abbr;
 
 
 

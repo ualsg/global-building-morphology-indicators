@@ -1,7 +1,7 @@
 import glob
 from collections import OrderedDict
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 from jinjasql import JinjaSql
 
@@ -11,172 +11,118 @@ class QueryParamsExpander:
         self.key = key
         self.params = params
 
+    def _ensure_non_empty_list(self, param_key: str):
+        if param_key in self.params.keys() and len(self.params[param_key]) == 0:
+            raise QueryParamsExpanderException(f"`{param_key}` cannot be an empty list. Please define at least one {param_key[:-1]}.")
+
+    def _concat_dict_values_separated_with_space(self, dict_key: str, value_key: str) -> str:
+        concat_str = ""
+        for dict_in_list in self.params[dict_key]:
+            concat_str += "\'" + dict_in_list[value_key] + "\' "
+        return concat_str.strip()
+
+    def _join_dicts(self, dict_keys: List[str]) -> List[dict]:
+        base_dicts = list()
+        updated_param_dicts = list()
+        for dict_idx, dict_key in enumerate(dict_keys):
+            param_dicts = self.params[dict_key]
+            if dict_idx == 0:
+                base_dicts = param_dicts
+            else:
+                if len(updated_param_dicts) > 0:
+                    base_dicts = updated_param_dicts
+                temp_list = list()
+                for base_dict_idx, base_dict in enumerate(base_dicts):
+                    for param_dict_idx, param_dict in enumerate(param_dicts):
+                        a = dict(base_dict, **param_dict)
+                        temp_list.append(a)
+                updated_param_dicts = temp_list
+        return updated_param_dicts
+
     def _expand_a_db_setup_params(self) -> List[dict]:
-        params_list = list()
-        superusers = ""
-        users = ""
-        if "databases" in self.params.keys() and len(self.params["databases"]) == 0:
-            raise QueryParamsExpanderException(
-                "`databases` cannot be an empty list. Please define at least one database name.")
-
-        if "superusers" in self.params.keys() and len(self.params["superusers"]) > 0:
-            for susr_dict in self.params["superusers"]:
-                superusers += "\'" + susr_dict["new_superuser"] + "\' "
-        superusers.strip()
-
-        if "users" in self.params.keys() and len(self.params["users"]) > 0:
-            for usr_dict in self.params["users"]:
-                users += "\'" + usr_dict["new_user"] + "\' "
-        users.strip()
-
         try:
-            for db_dict in self.params["databases"]:
-                if len(superusers.strip()) > 0:
-                    db_dict["superusers"] = superusers.strip()
-                if len(users.strip()) > 0:
-                    db_dict["users"] = users.strip()
-                if "superusers" in self.params.keys() and len(self.params["superusers"]) > 0:
-                    for susr_dict in self.params["superusers"]:
-                        a = dict(db_dict, **susr_dict)
-                        if "users" in self.params.keys() and len(self.params["users"]) > 0:
-                            for usr_dict in self.params["users"]:
-                                a = dict(a, **usr_dict)
-                                params_list.append(a)
-                        else:
-                            params_list.append(a)
-                else:
-                    if "users" in self.params.keys() and len(self.params["users"]) > 0:
-                        for usr_dict in self.params["users"]:
-                            a = dict(db_dict, **usr_dict)
-                            params_list.append(a)
-                    else:
-                        params_list.append(db_dict)
+            dict_keys = ["databases"]
+            users, superusers = str(), str()
+            if "superusers" in self.params.keys() and len(self.params["superusers"]) > 0:
+                superusers = self._concat_dict_values_separated_with_space("superusers", "new_superuser")
+                superusers = superusers.strip()
+                dict_keys.append("superusers")
 
+            if "users" in self.params.keys() and len(self.params["users"]) > 0:
+                users = self._concat_dict_values_separated_with_space("users", "new_user")
+                users = users.strip()
+                dict_keys.append("users")
+
+            for dict_key in dict_keys:
+                self._ensure_non_empty_list(dict_key)
+
+            params_list = self._join_dicts(dict_keys)
+            for param_dict in params_list:
+                if len(superusers.strip()) > 0:
+                    param_dict["superusers"] = superusers
+                if len(users.strip()) > 0:
+                    param_dict["users"] = users
             return params_list
         except Exception as e:
             raise QueryParamsExpanderException(e)
 
     def _expand_b_osm_rasters_gadm_params(self) -> List[dict]:
-        params_list = list()
-        if "osm_source_files" in self.params.keys() and len(self.params["osm_source_files"]) == 0:
-            raise QueryParamsExpanderException(
-                "`osm_source_files` cannot be an empty list. Please define at least one database and its corresponding OSM file.")
-
-        if "raster_names" in self.params.keys() and len(self.params["raster_names"]) == 0:
-            raise QueryParamsExpanderException(
-                "`raster_names` cannot be an empty list. Please define at least one raster and its corresponding raster file suffix.")
-
-        if "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) == 0:
-            raise QueryParamsExpanderException(
-                "`agg_levels` cannot be an empty list. Please define at least one set of parameters for at least one agg_level.")
-
         try:
-            for db_dict in self.params["osm_source_files"]:
-                for raster_dict in self.params["raster_names"]:
-                    a = dict(db_dict, **raster_dict)
-                    for agg_dict in self.params["agg_levels"]:
-                        a = dict(a, **agg_dict)
-                        params_list.append(a)
+            dict_keys = ["osm_source_files", "raster_names", "agg_levels"]
+            for dict_key in dict_keys:
+                self._ensure_non_empty_list(dict_key)
 
+            params_list = self._join_dicts(dict_keys)
             return params_list
         except Exception as e:
             raise QueryParamsExpanderException(e)
 
     def _expand_c0_misc_params(self) -> List[dict]:
-        params_list = list()
-        if "databases" in self.params.keys() and len(self.params["databases"]) == 0:
-            raise QueryParamsExpanderException(
-                "`databases` cannot be an empty list. Please define at least one database.")
-
-        if "raster_names" in self.params.keys() and len(self.params["raster_names"]) == 0:
-            raise QueryParamsExpanderException(
-                "`raster_names` cannot be an empty list. Please define at least one raster.")
-
-        if "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) == 0:
-            raise QueryParamsExpanderException(
-                "`agg_levels` cannot be an empty list. Please define at least one set of parameters for at least one agg_level.")
-
         try:
-            for db_dict in self.params["databases"]:
-                for raster_dict in self.params["raster_names"]:
-                    a = dict(db_dict, **raster_dict)
-                    for agg_dict in self.params["agg_levels"]:
-                        a = dict(a, **agg_dict)
-                        params_list.append(a)
+            dict_keys = ["databases", "raster_names", "agg_levels"]
+            for dict_key in dict_keys:
+                self._ensure_non_empty_list(dict_key)
 
+            params_list = self._join_dicts(dict_keys)
             return params_list
         except Exception as e:
             raise QueryParamsExpanderException(e)
 
     def _expand_c1_gbmi_params(self) -> List[dict]:
-        params_list = list()
-        agg_levels = ""
-        if "databases" in self.params.keys() and len(self.params["databases"]) == 0:
-            raise QueryParamsExpanderException("`databases` cannot be an empty list. Please define at least one database.")
-
-        if "raster_names" in self.params.keys() and len(self.params["raster_names"]) == 0:
-            raise QueryParamsExpanderException(
-                "`raster_names` cannot be an empty list. Please define at least one raster.")
-
-        if "buffers" in self.params.keys() and len(self.params["buffers"]) == 0:
-            raise QueryParamsExpanderException("`buffers` cannot be an empty list. Please define at least one buffer.")
-
-        if "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) == 0:
-            raise QueryParamsExpanderException(
-                "`agg_levels` cannot be an empty list. Please define at least one set of parameters for at least one agg_level.")
-        elif "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) > 0:
-            for agg_dict in self.params["agg_levels"]:
-                agg_levels += "\'" + agg_dict["agg_level"] + "\' "
-            agg_levels.strip()
-        else:
-            pass
-
         try:
-            for db_dict in self.params["databases"]:
+            agg_levels = str()
+            if "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) > 0:
+                agg_levels = self._concat_dict_values_separated_with_space("agg_levels", "agg_level")
+                agg_levels = agg_levels.strip()
+
+            dict_keys = ["databases", "raster_names", "agg_levels", "buffers"]
+            for dict_key in dict_keys:
+                self._ensure_non_empty_list(dict_key)
+
+            params_list = self._join_dicts(dict_keys)
+            for param_dict in params_list:
                 if len(agg_levels.strip()) > 0:
-                    db_dict["agg_levels"] = agg_levels.strip()
-                for raster_dict in self.params["raster_names"]:
-                    a = dict(db_dict, **raster_dict)
-                    for buff_dict in self.params["buffers"]:
-                        a = dict(a, **buff_dict)
-                        for agg_dict in self.params["agg_levels"]:
-                            a = dict(a, **agg_dict)
-                            params_list.append(a)
+                    param_dict["agg_levels"] = agg_levels
 
             return params_list
         except Exception as e:
             raise QueryParamsExpanderException(e)
 
     def _expand_d_export_params(self) -> List[dict]:
-        params_list = list()
-        agg_levels = ""
-
-        if "databases" in self.params.keys() and len(self.params["databases"]) == 0:
-            raise QueryParamsExpanderException("`databases` cannot be an empty list. Please define at least one database.")
-
-        if "raster_names" in self.params.keys() and len(self.params["raster_names"]) == 0:
-            raise QueryParamsExpanderException(
-                "`raster_names` cannot be an empty list. Please define at least one raster.")
-
-        if "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) == 0:
-            raise QueryParamsExpanderException(
-                "`agg_levels` cannot be an empty list. Please define at least one set of parameters for at least one agg_level.")
-        elif "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) > 0:
-            for agg_dict in self.params["agg_levels"]:
-                agg_levels += "\'" + agg_dict["agg_level"] + "\' "
-            agg_levels.strip()
-        else:
-            pass
-
         try:
-            for db_dict in self.params["databases"]:
+            agg_levels = str()
+            if "agg_levels" in self.params.keys() and len(self.params["agg_levels"]) > 0:
+                agg_levels = self._concat_dict_values_separated_with_space("agg_levels", "agg_level")
+                agg_levels = agg_levels.strip()
+
+            dict_keys = ["databases", "raster_names", "agg_levels"]
+            for dict_key in dict_keys:
+                self._ensure_non_empty_list(dict_key)
+
+            params_list = self._join_dicts(dict_keys)
+            for param_dict in params_list:
                 if len(agg_levels.strip()) > 0:
-                    db_dict["agg_levels"] = agg_levels.strip()
-                for raster_dict in self.params["raster_names"]:
-                    a = dict(db_dict, **raster_dict)
-                    for agg_dict in self.params["agg_levels"]:
-                        a = dict(a, **agg_dict)
-                        params_list.append(a)
+                    param_dict["agg_levels"] = agg_levels
 
             return params_list
         except Exception as e:
@@ -185,6 +131,7 @@ class QueryParamsExpander:
     def run(self):
         default_err = "No matching expansion function."
         func_name = '_expand_' + str(self.key).replace('-', '_') + '_params'
+        print(func_name)
         try:
             return getattr(self, func_name, lambda: QueryParamsExpanderException(default_err))()
         except Exception as e:
