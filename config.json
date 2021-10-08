@@ -639,12 +639,6 @@
       ],
       "agg_levels": [
         {
-          "agg_level": "cell",
-          "agg_columns": "\\\"cell_id\\\" AS \\\"c_id\\\", \\\"cell_country\\\" AS \\\"c_country\\\", \\\"cell_admin_div1\\\" AS \\\"c_adm_div1\\\", \\\"cell_admin_div2\\\" AS \\\"c_adm_div2\\\", \\\"cell_admin_div3\\\" AS \\\"c_adm_div3\\\", \\\"cell_admin_div4\\\" AS \\\"c_adm_div4\\\", \\\"cell_admin_div5\\\" AS \\\"c_adm_div5\\\"",
-          "agg_geom": "\\\"cell_geom\\\" AS \\\"c_geom\\\"",
-          "agg_geom_wkt": "ST_AsEWKT(\\\"cell_geom\\\") AS \\\"c_geom\\\""
-        },
-        {
           "agg_level": "admin_div5",
           "agg_columns": "\\\"cell_country\\\" AS \\\"c_country\\\", \\\"cell_admin_div1\\\" AS \\\"c_adm_div1\\\", \\\"cell_admin_div2\\\" AS \\\"c_adm_div2\\\", \\\"cell_admin_div3\\\" AS \\\"c_adm_div3\\\", \\\"cell_admin_div4\\\" AS \\\"c_adm_div4\\\", \\\"cell_admin_div5\\\" AS \\\"c_adm_div5\\\"",
           "agg_geom": "\\\"agg_geom_admin_div5\\\" AS \\\"agg_geom\\\"",
@@ -679,6 +673,12 @@
           "agg_columns": "\\\"cell_country\\\" AS \\\"c_country\\\"",
           "agg_geom": "\\\"agg_geom_country\\\" AS \\\"agg_geom\\\"",
           "agg_geom_wkt": "ST_AsEWKT(\\\"agg_geom_country\\\") AS \\\"agg_geom\\\""
+        },
+        {
+          "agg_level": "cell",
+          "agg_columns": "\\\"cell_id\\\" AS \\\"c_id\\\", \\\"cell_country\\\" AS \\\"c_country\\\", \\\"cell_admin_div1\\\" AS \\\"c_adm_div1\\\", \\\"cell_admin_div2\\\" AS \\\"c_adm_div2\\\", \\\"cell_admin_div3\\\" AS \\\"c_adm_div3\\\", \\\"cell_admin_div4\\\" AS \\\"c_adm_div4\\\", \\\"cell_admin_div5\\\" AS \\\"c_adm_div5\\\"",
+          "agg_geom": "\\\"cell_geom\\\" AS \\\"c_geom\\\"",
+          "agg_geom_wkt": "ST_AsEWKT(\\\"cell_geom\\\") AS \\\"c_geom\\\""
         }
       ]
     }
