@@ -95,6 +95,11 @@ class QueryParamsExpander:
                 agg_levels = self._concat_dict_values_separated_with_space("agg_levels", "agg_level")
                 agg_levels = agg_levels.strip()
 
+            databases = str()
+            if "databases" in self.params.keys() and len(self.params["databases"]) > 0:
+                databases = self._concat_dict_values_separated_with_space("databases", "database")
+                databases = databases.strip()
+
             dict_keys = ["databases", "raster_names", "agg_levels", "buffers"]
             for dict_key in dict_keys:
                 self._ensure_non_empty_list(dict_key)
@@ -103,6 +108,9 @@ class QueryParamsExpander:
             for param_dict in params_list:
                 if len(agg_levels.strip()) > 0:
                     param_dict["agg_levels"] = agg_levels
+
+                if len(databases.strip()) > 0:
+                    param_dict["databases"] = databases
 
             return params_list
         except Exception as e:

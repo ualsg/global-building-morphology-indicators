@@ -3,12 +3,12 @@
 -- DROP TABLE IF EXISTS {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}} CASCADE;
 
 
-
 CREATE TABLE {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}} AS (
                                                                         WITH agg0_neighbours AS (
                                                                             SELECT
                                                                                 {{agg_columns}},
                                                                                 {{agg_geom}},
+                                                                                {{agg_area}},
                                                                                 AVG("buffer_area_25") AS "buffer_area_25_mean",
                                                                                 MIN("neighbour_25_count") AS "neighbour_25_count_min",
                                                                                 (PERCENTILE_CONT(0.5) WITHIN GROUP ( ORDER BY "neighbour_25_count" )) AS "neighbour_25_count_median",
@@ -130,6 +130,7 @@ CREATE TABLE {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}} AS (
                                                                         SELECT
                                                                             {{agg_columns}},
                                                                             {{agg_geom}},
+                                                                            {{agg_area}},
                                                                             "buffer_area_25_mean",
                                                                             "neighbour_25_count_min",
                                                                             "neighbour_25_count_median",

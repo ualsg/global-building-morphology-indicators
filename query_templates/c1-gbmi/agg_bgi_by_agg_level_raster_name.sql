@@ -8,6 +8,7 @@ CREATE TABLE {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}} AS (
                                                                                      SELECT
                                                                                          {{agg_columns}},
                                                                                          {{agg_geom}},
+                                                                                         {{agg_area}},
                                                                                          count(DISTINCT osm_id) AS buildings_count,
                                                                                          count(DISTINCT osm_id) / {{agg_area}} AS buildings_count_normalised,
                                                                                          min(clipped_bldg_area) AS footprint_area_min,
@@ -159,6 +160,7 @@ CREATE TABLE {{gbmi_schema}}.agg_bgi_by_{{agg_level}}_{{raster_name}} AS (
                                                                         SELECT
                                                                             {{agg_columns}},
                                                                             {{agg_geom}},
+                                                                            {{agg_area}},
                                                                             buildings_count,
                                                                             buildings_count_normalised,
                                                                             footprint_area_min,

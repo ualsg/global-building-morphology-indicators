@@ -9,7 +9,7 @@ fi
 
 for db in "${databases[@]}"; do
   for raster_name in "${raster_names[@]}"; do
-    if [[ "${db}" == "argentina"  ||  "${db}" == "new_zealand"  ||  "${db}" == "switzerland" ]] && [[ "${raster_name}" == "worldpop2020_100m" ]]; then
+    if [[  "${db}" == "planet"  ||  "${db}" == "argentina"  ||  "${db}" == "new_zealand"  ||  "${db}" == "switzerland" ]] && [[ "${raster_name}" == "worldpop2020_100m" ]]; then
       echo "Skipping ${raster_name} export for ${db}."
     fi
     cmd="bash ./export_${raster_name}_${db}.sh"
