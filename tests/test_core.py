@@ -89,7 +89,7 @@ class TestQueryParamsExpander(BaseTestQueryGenerator):
             "qa_schema": "osm_qa",
             "qa_script_dir": "/data/sql_scripts/osm-qa",
             "base_source_dir": "/data/base-sources",
-            "gbmi_source_dir": "/data/gbmi-sources",
+            "site_source_dir": "/data/gbmi-sources",
             "country_codes_dir": "/data/base-sources/country_codes",
             "country_codes_file": "country_codes.csv",
             "gadm_source_dir": "/data/base-sources/gadm36",

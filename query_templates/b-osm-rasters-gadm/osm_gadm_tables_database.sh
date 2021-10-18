@@ -5,7 +5,7 @@ host="{{ host_address }}"
 database="{{ database }}"
 public_schema="{{public_schema}}"
 script_dir="{{ public_script_dir }}"
-gbmi_source_dir="{{ gbmi_source_dir }}"
+site_source_dir="{{ site_source_dir }}"
 osm_source_file="{{ osm_source_file }}"
 gadm_source_dir="{{ gadm_source_dir }}"
 gadm_source_file="{{gadm_source_file}}"
@@ -14,7 +14,7 @@ gadm_target_table="{{gadm_target_table}}"
 
 # Load OSM PBF file
 # Without '-W' option, this doesn't prompt for password, might use .pgpass
-osm_cmd="time osm2pgsql --create --slim --cache 10000 --keep-coastlines --flat-nodes /data/tmp-osm --hstore --extra-attributes -l --host ${host} --port 5432 --database ${database} ${gbmi_source_dir}/${database}/${osm_source_file}"
+osm_cmd="time osm2pgsql --create --slim --cache 10000 --keep-coastlines --flat-nodes /data/tmp-osm --hstore --extra-attributes -l --host ${host} --port 5432 --database ${database} ${site_source_dir}/${database}/${osm_source_file}"
 echo "$osm_cmd"
 eval "$osm_cmd"
 

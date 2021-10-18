@@ -1,6 +1,6 @@
 -- MATERIALIZED VIEW FOR DEBUGGING
--- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid_duplicates CASCADE;
--- DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid_duplicates CASCADE;
+DROP TABLE IF EXISTS {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid CASCADE;
 
 
 CREATE TABLE {{gbmi_schema}}.buildings_indicators_by_{{raster_name}}_centroid AS (

@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS {{public_schema}}.agg_gadm36_areas;
+DROP TABLE IF EXISTS {{public_schema}}.agg_gadm36_areas CASCADE;
 
 
 CREATE TABLE {{public_schema}}.agg_gadm36_areas AS (

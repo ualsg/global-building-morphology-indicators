@@ -59,8 +59,7 @@ CREATE TABLE {{gbmi_schema}}.buildings AS (
                               tags -> 'osm_version' AS osm_version
                           FROM
                               {{public_schema}}.planet_osm_polygon pop
-                          WHERE building IS NOT NULL AND lower(building)
-                              IN (SELECT value AS building FROM {{misc_schema}}.osm_polygon_attr_freqs WHERE attr = 'building' AND value IS NOT NULL LIMIT 12)
+                          WHERE building IS NOT NULL OR tags->'building:part' IS NOT NULL OR tags->'type'='building'
                           );
 
 

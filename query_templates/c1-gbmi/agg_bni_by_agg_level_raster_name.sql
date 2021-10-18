@@ -1,6 +1,6 @@
 -- MATERIALIZED VIEW FOR DEBUGGING
--- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_duplicates CASCADE;
--- DROP TABLE IF EXISTS {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}} CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}}_duplicates CASCADE;
+DROP TABLE IF EXISTS {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}} CASCADE;
 
 
 CREATE TABLE {{gbmi_schema}}.agg_bni_by_{{agg_level}}_{{raster_name}} AS (

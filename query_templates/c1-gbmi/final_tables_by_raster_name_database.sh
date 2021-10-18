@@ -4,18 +4,12 @@
 host="{{ host_address }}"
 database="{{ database }}"
 gbmi_query_dir="{{ gbmi_script_dir }}"
+raster_name="{{raster_name}}"
 
 
-# Joint table of building geometric and neighbour indicators
-declare -a tbl_scripts=(\
-  'buildings_indicators_by_{{raster_name}}')
-
-# the -w option prevents prompts for password, uses .pgpass
-for script in "${tbl_scripts[@]}"; do
-  cmd="time psql -h ${host} -p 5432 -d ${database} -w -f ${gbmi_query_dir}/${script}.sql"
-  echo "$cmd"
-  eval "$cmd"
-done
+cmd="time psql -h ${host} -p 5432 -d ${database} -w -f ${gbmi_query_dir}/buildings_indicators_by_${raster_name}.sql"
+echo "$cmd"
+eval "$cmd"
 
 
 # Aggregated both geometric and neighbour building indicators at cell, admin divisions and country levels

@@ -12,8 +12,8 @@ for db in "${databases[@]}"; do
     if [[ "${db}" == "planet"  ||  "${db}" == "argentina"  ||  "${db}" == "new_zealand"  ||  "${db}" == "switzerland" ]] && [[ "${raster_name}" == "worldpop2020_100m" ]]; then
       echo "Skipping ${raster_name} for ${db}."
     else
-      cmd1="bash ./final_tables_by_${raster_name}_${db}.sh"
-      cmd2="bash ./final_tables_by_${raster_name}_centroid_${db}.sh"
+      cmd1="bash ./neighbours_tables_by_${raster_name}_${db}.sh"
+      cmd2="bash ./neighbours_tables_by_${raster_name}_centroid_${db}.sh"
       eval "${cmd1}"
       eval "${cmd2}"
     fi

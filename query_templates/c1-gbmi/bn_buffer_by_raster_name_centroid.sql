@@ -1,6 +1,6 @@
 -- MATERIALIZED VIEW FOR DEBUGGING
--- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}_centroid_duplicates CASCADE;
--- DROP TABLE IF EXISTS {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}_centroid CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}_centroid_duplicates CASCADE;
+DROP TABLE IF EXISTS {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}_centroid CASCADE;
 
 
 
@@ -8,8 +8,8 @@ CREATE TABLE {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}}_centroid AS (
                                                               WITH bldgs_within_{{buffer}} AS (
                                                                                        SELECT
                                                                                             *,
-                                                                                            ST_AREA(ST_Buffer("way_centroid1", {{buffer}})) AS buffer_area_{{buffer}},
-                                                                                            ST_AREA(ST_INTERSECTION(ST_Buffer("way_centroid1", {{buffer}}), "way2")) AS clipped_way_area2_{{buffer}},
+                                                                                            ST_AREA(ST_Buffer("way_centroid1"::geography, {{buffer}})) AS buffer_area_{{buffer}},
+                                                                                            ST_AREA(ST_INTERSECTION(ST_Buffer("way_centroid1"::geography, {{buffer}}), "way2"::geography)) AS clipped_way_area2_{{buffer}},
                                                                                             CASE
                                                                                                 WHEN height2 IS NOT NULL AND distance > 0 THEN height2 * 1.0 / distance
                                                                                             END AS ratio_neighbour_height_to_distance

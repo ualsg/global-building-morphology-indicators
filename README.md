@@ -79,7 +79,7 @@ The following are the highlights of key configurations:
 - `qa_schema`: schema name for quality analysis related tables
 - `qa_script_dir`: directory path where queries for generating tables in quality analysis schema
 - `base_source_dir`: base directory path where base source such as GADM and country codes are stored
-- `gbmi_source_dir`: base directory path where gbmi source data are stored. Currently, each
+- `site_source_dir`: base directory path where gbmi source data are stored. Currently, each
   geographical scope has its own sub-directory that contains the source OSM and rasters
 - `country_codes_dir`: directory name where country codes csv is stored
 - `country_codes_file`: file name of the country code files
