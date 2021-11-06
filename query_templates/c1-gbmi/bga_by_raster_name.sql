@@ -1,6 +1,6 @@
 -- MATERIALIZED VIEW FOR DEBUGGING
--- DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.bga_by_{{raster_name}}_duplicates CASCADE;
--- DROP TABLE IF EXISTS {{gbmi_schema}}.bga_by_{{raster_name}} CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS {{gbmi_schema}}.bga_by_{{raster_name}}_duplicates CASCADE;
+DROP TABLE IF EXISTS {{gbmi_schema}}.bga_by_{{raster_name}} CASCADE;
 
 CREATE TABLE {{gbmi_schema}}.bga_by_{{raster_name}} AS (
                                      WITH dumped_mbr AS (
@@ -134,7 +134,7 @@ CREATE TABLE {{gbmi_schema}}.bga_by_{{raster_name}} AS (
                                          bldg.footprint_area * bldg."height" AS volume,
                                          bldg.compactness,
                                          bldg.complexity,
-                                         sqrt( bldg.footprint_area / bldg.mbr_area ) * ( bma.mbr_length / bldg.perimeter ) AS equivalent_rectangular_index,
+                                         sqrt( bldg.footprint_area / bldg.mbr_area ) * ( (bma.mbr_length + bma.mbr_width) * 2 / bldg.perimeter ) AS equivalent_rectangular_index,
                                          bldg.start_date,
                                          "cell_id",
                                          "cell_centroid",

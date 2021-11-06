@@ -4,7 +4,7 @@
 
 This aim of this project/research is to generate a Global Building Morphology Indicators (GBMI)
 dataset based on the open data - OpenStreetMap. A collection of bash scripts and SQL scripts are run
-to perform the database setup, data ingestion, data transformation and analysis that yeilds the GBMI
+to perform the database setup, data ingestion, data transformation and analysis that yields the GBMI
 output, and the final data export.
 
 The scope of GBMI datasets could be global, extracting building data from the `planet`
@@ -20,8 +20,8 @@ postgis_topology.
 ### About this Python Package
 
 The GBMI dataset generation process generate more than 50 tables per country per raster system. The
-number of tables increase when more than one raster system is implemented. Keeping analysis pipeline
-consistent across selected geographical scopes, many parts of the scripts are repetitive. For ease
+number of tables increases when more than one raster system is implemented. Keeping analysis 
+pipeline consistent across selected geographical scopes, many parts of the scripts are repetitive. For ease
 of maintenance, this repository offers a framework that generates these bash scripts and SQL queries
 using templates.
 
