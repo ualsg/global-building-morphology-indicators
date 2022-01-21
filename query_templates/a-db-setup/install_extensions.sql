@@ -6,6 +6,15 @@ CREATE EXTENSION postgis_tiger_geocoder;
 CREATE EXTENSION postgis_topology;
 
 -- this is for monitoring performance
+
+-- this is for auditing and monitoring performance
+CREATE EXTENSION pgaudit;
+SET pgaudit.log = 'read,write,ddl';
+SET pgaudit.log_catalog = 'off';
+SET pgaudit.log_client = 'on';
+SET pgaudit.log_relation = 'on';
+SET pgaudit.log_parameter = 'on';
+
 CREATE EXTENSION pg_stat_statements;
 
 -- this is somehow required for PGSQL12 and POSTGIS 3+
