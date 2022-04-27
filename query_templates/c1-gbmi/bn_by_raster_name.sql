@@ -37,7 +37,7 @@ CREATE TABLE {{gbmi_schema}}.bn_by_{{raster_name}} AS (
                                                                     SELECT DISTINCT osm_id, way, way_centroid, calc_way_area, height
                                                                     FROM {{gbmi_schema}}.buildings_by_{{raster_name}}
                                                                     ) AS bldg2
-                                    WHERE ST_DWITHIN(bldg1.way_centroid::geography, bldg2.way_centroid::geography, {% if limit_buffer %}{{limit_buffer}}{% else %}100{% endif %}) AND NOT ST_Equals(bldg1."way"::geometry, bldg2."way"::geometry)
+                                    WHERE ST_DWITHIN(bldg1.way::geography, bldg2.way::geography, {% if limit_buffer %}{{limit_buffer}}{% else %}100{% endif %}) AND NOT ST_Equals(bldg1."way"::geometry, bldg2."way"::geometry)
                                     );
 
 
