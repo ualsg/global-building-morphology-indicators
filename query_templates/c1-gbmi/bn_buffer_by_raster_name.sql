@@ -12,12 +12,12 @@ CREATE TABLE {{gbmi_schema}}.bn_{{buffer}}_by_{{raster_name}} AS (
                                                                                             ST_AREA(ST_INTERSECTION(ST_Buffer("way1"::geography, {{buffer}}), "way2"::geography)) AS clipped_way_area2_{{buffer}},
                                                                                             CASE
                                                                                                 WHEN height2 IS NOT NULL AND distance > 0 THEN height2 * 1.0 / distance
+                                                                                                ELSE NULL
                                                                                             END AS ratio_neighbour_height_to_distance
                                                                                        FROM
                                                                                            {{gbmi_schema}}.bn_by_{{raster_name}}
-                                                                                       WHERE distance > 0 AND distance <= {{buffer}}
+                                                                                       WHERE distance >= 0 AND distance <= {{buffer}}
                                                                                            AND osm_id1 != osm_id2
-                                                                                           AND NOT ST_Equals(way_centroid1::geometry, way_centroid2::geometry)
                                                                                            AND NOT ST_Equals(way1::geometry, way2::geometry)
                                                                                        ),
                                                                   count_neighbours_{{buffer}} AS (

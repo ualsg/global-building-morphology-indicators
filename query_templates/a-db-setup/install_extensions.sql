@@ -1,15 +1,14 @@
 -- create extensions
+CREATE EXTENSION IF NOT EXISTS plpgsql;
 CREATE EXTENSION postgis;
 CREATE EXTENSION hstore;
 CREATE EXTENSION fuzzystrmatch;
 CREATE EXTENSION postgis_tiger_geocoder;
 CREATE EXTENSION postgis_topology;
 
--- this is for monitoring performance
-
 -- this is for auditing and monitoring performance
 CREATE EXTENSION pgaudit;
-SET pgaudit.log = 'read,write,ddl';
+SET pgaudit.log = 'write,ddl';
 SET pgaudit.log_catalog = 'off';
 SET pgaudit.log_client = 'on';
 SET pgaudit.log_relation = 'on';
@@ -27,6 +26,6 @@ ALTER SCHEMA tiger_data OWNER TO rds_superuser;
 ALTER SCHEMA topology OWNER TO rds_superuser;
 
 
-ALTER TABLE {{public_schema}}.spatial_ref_sys
+ALTER TABLE public.spatial_ref_sys
     OWNER TO rds_superuser;
-GRANT SELECT, INSERT ON TABLE {{public_schema}}.spatial_ref_sys TO rds_superuser;
+GRANT SELECT, INSERT ON TABLE public.spatial_ref_sys TO rds_superuser;
