@@ -1,5 +1,8 @@
 ## Global Building Morphology Indicators (GBMI)
 
+
+![](featured.png "GBMI")
+
 ### Sypnosis
 
 This aim of this project/research is to generate a Global Building Morphology Indicators (GBMI)
