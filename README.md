@@ -1,34 +1,59 @@
 ## Global Building Morphology Indicators (GBMI)
 
-
 ![](featured.png "GBMI")
 
-### Sypnosis
+### Synopsis
 
-This aim of this project/research is to generate a Global Building Morphology Indicators (GBMI)
-dataset based on the open data - OpenStreetMap. A collection of bash scripts and SQL scripts are run
-to perform the database setup, data ingestion, data transformation and analysis that yields the GBMI
-output, and the final data export.
+GBMI is an open project on systematising, computing, and storing individual and aggregated building form metrics, which may be useful for researchers and practitioners across multiple domains, e.g. urban data science.
+
+This repository contains the list of hundreds of indicators from building footprints, which we have identified in our research, and the code to implement them in a database.
+For an overview of the entire research (method, systematic literature review, data, code, examples of analyses...), please visit the [GBMI project website](https://ual.sg/project/gbmi/) or the [research paper published in CEUS](https://doi.org/10.1016/j.compenvurbsys.2022.101809).
+For the repository (i.e. ready-to-use pre-computed datasets) covering dozens of selected urban areas around the world, please visit the website.
+
+The code is a collection of bash scripts and SQL scripts that are run to perform the database setup, data ingestion, data transformation and analysis that yields the GBMI output, and the final data export.
+It takes OpenStreetMap (OSM) as input, but it may be adapted for other sources of data.
+The aggregation of the indicators works both for administrative areas and according to a regular grid (raster).
 
 The scope of GBMI datasets could be global, extracting building data from the `planet`
-Openstreetmap data; or it could be focused on a selection of geographical regions such of countries,
-states, or cities. Each defined scope will be contained in its own database. The raster system is
-also something that could be defined and swapped as it fits the research purpose.
+OSM data; or it could be focused on a selection of geographical regions such of countries,
+states, or cities.
+Each defined scope will be contained in its own database. The raster system (grid) is adopted from WorldPop, but it is also something that can be defined and swapped as it fits the research purpose.
 
-The GBMI requires a PostgreSQL 12 (or newer) database running on cloud services such as Amazon Web
-Services (AWS) RDS or self-managed server. PostGIS and a few other extensions are also necessary for
-our spatial analysis. These extensions are: postgis, hstore, fuzzystrmatch, postgis_tiger_geocoder,
-postgis_topology.
+The GBMI implementation requires a PostgreSQL 12 (or newer) database running on cloud services such as Amazon Web Services (AWS) RDS or a self-managed server. PostGIS and a few other extensions are also necessary for the spatial analysis. These extensions are: postgis, hstore, fuzzystrmatch, postgis_tiger_geocoder, postgis_topology.
+
+### Research paper and attribution
+
+A [paper](https://doi.org/10.1016/j.compenvurbsys.2022.101809) describing the project, and from which the description above was adopted, was published in _Computers, Environment and Urban Systems_.
+Please refer to the paper for detailed information, while this website summarises the project and provides the links to the datasets and code.
+
+If you use GBMI in a scientific context, please cite the paper:
+
+```
+@article{2022_ceus_gbmi,
+ author = {Biljecki, Filip and Chow, Yoong Shin},
+ doi = {10.1016/j.compenvurbsys.2022.101809},
+ journal = {Computers, Environment and Urban Systems},
+ number = {X},
+ pages = {X},
+ title = {Global Building Morphology Indicators},
+ volume = {X},
+ year = {2022}
+}
+```
+
+### License
+
+All aspects of the project are licenced according to [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+That means that you can use our work for pretty much anything as long as you attribute it (i.e. cite our [paper](https://doi.org/10.1016/j.compenvurbsys.2022.101809) above).
+The [paper](https://doi.org/10.1016/j.compenvurbsys.2022.101809) has been released under the same licence and it is open access.
 
 ### About this Python Package
 
 The GBMI dataset generation process generate more than 50 tables per country per raster system. The
 number of tables increases when more than one raster system is implemented. Keeping analysis 
-pipeline consistent across selected geographical scopes, many parts of the scripts are repetitive. For ease
-of maintenance, this repository offers a framework that generates these bash scripts and SQL queries
-using templates.
+pipeline consistent across selected geographical scopes, many parts of the scripts are repetitive. For ease of maintenance, this repository offers a framework that generates these bash scripts and SQL queries using templates.
 
-The python package is developed using Jinja2 templating engine to produce bash scripts and sql
+The Python package is developed using Jinja2 templating engine to produce bash scripts and sql
 queries using predefined templates. The scripts are then executed for each of the pre-defined
 geographical scope of studies. The package aim to achieve the following goals:
 
@@ -169,9 +194,9 @@ The bash scripts and queries under this section are to perform the following tas
 In this section, the scripts loads the Openstreetmap data, the GADM shapefiles and selected raster
 systems from the specified source directory in `config.json`.
 
-##### Openstreetmap
+##### OpenStreetMap
 
-The Openstreetmap data are downloaded from [Geofabrik](http://download.geofabrik.de/) server. If the
+The OSM data are downloaded from [Geofabrik](http://download.geofabrik.de/) server. If the
 scope/area of interest are not directly available, the larger area of the corresponding city/region
 is downloaded and further extracted using the [`osmium-tool`](https://osmcode.org/osmium-tool/)
 program.
@@ -295,9 +320,9 @@ The exported files are organized under the following directory hierarchic struct
 
 The export of various format are stored under the `{aggregation-level}` folder.
 
-### Computed Global Building Morpological Index
+### Computed Global Building Morphological Indicators
 
-The computed GBMI is a dataset with more than 380 fields. THe export functions also mandate
+The computed GBMI is a dataset with more than 380 fields. The export functions also mandate
 abbreviated fieldnames. Thus, the following is the data dictionary for all the exported fields.
 
 ![GBMI Data Dict](data_dictionary/GBMI_Part1.jpg)
@@ -308,4 +333,17 @@ abbreviated fieldnames. Thus, the following is the data dictionary for all the e
 ![GBMI Data Dict](data_dictionary/GBMI_Part6.jpg)
 ![GBMI Data Dict](data_dictionary/GBMI_Part7.jpg)
 ![GBMI Data Dict](data_dictionary/GBMI_Part8.jpg)
+
+
+## Contact
+
+[Yoong Shin Chow](https://ual.sg/authors/yoong-shin/), [Urban Analytics Lab](https://ual.sg), National University of Singapore, Singapore
+
+## Acknowledgements
+
+GBMI is made possible by the efforts of many others, primarily developers of PostgreSQL/PostGIS and the OpenStreetMap community.
+
+This research is part of the project Large-scale 3D Geospatial Data for Urban Analytics, which is supported by the National University of Singapore under the Start Up Grant R-295-000-171-133 and by the AWS Cloud Credits for Research.
+
+For more information, please see the aforementioned [paper](https://doi.org/10.1016/j.compenvurbsys.2022.101809).
 
