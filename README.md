@@ -28,16 +28,17 @@ Please refer to the paper for detailed information, while this website summarise
 
 If you use GBMI in a scientific context, please cite the paper:
 
+Biljecki F, Chow YS (2022): Global Building Morphology Indicators. Computers, Environment and Urban Systems 95: 101809.
+
 ```
 @article{2022_ceus_gbmi,
- author = {Biljecki, Filip and Chow, Yoong Shin},
- doi = {10.1016/j.compenvurbsys.2022.101809},
- journal = {Computers, Environment and Urban Systems},
- number = {X},
- pages = {X},
- title = {Global Building Morphology Indicators},
- volume = {X},
- year = {2022}
+  author = {Biljecki, Filip and Chow, Yoong Shin},
+  doi = {10.1016/j.compenvurbsys.2022.101809},
+  journal = {Computers, Environment and Urban Systems},
+  pages = {101809},
+  title = {Global Building Morphology Indicators},
+  volume = {95},
+  year = {2022}
 }
 ```
 
