@@ -23,12 +23,12 @@ The GBMI implementation requires a PostgreSQL 12 (or newer) database running on 
 
 ### Research paper and attribution
 
-A [paper](https://doi.org/10.1016/j.compenvurbsys.2022.101809) describing the project, and from which the description above was adopted, was published in _Computers, Environment and Urban Systems_.
-Please refer to the paper for detailed information, while this website summarises the project and provides the links to the datasets and code.
+An open access [paper](https://doi.org/10.1016/j.compenvurbsys.2022.101809) describing the project, and from which the description above was adopted, was published in _Computers, Environment and Urban Systems_.
+Please refer to the [paper](https://doi.org/10.1016/j.compenvurbsys.2022.101809) for detailed information, while this website summarises the project and provides the links to the datasets and code.
 
-If you use GBMI in a scientific context, please cite the paper:
+If you use GBMI in a scientific context, please cite the [paper](https://doi.org/10.1016/j.compenvurbsys.2022.101809):
 
-Biljecki F, Chow YS (2022): Global Building Morphology Indicators. Computers, Environment and Urban Systems 95: 101809.
+Biljecki F, Chow YS (2022): Global Building Morphology Indicators. Computers, Environment and Urban Systems 95: 101809. doi: [10.1016/j.compenvurbsys.2022.101809](https://doi.org/10.1016/j.compenvurbsys.2022.101809)
 
 ```
 @article{2022_ceus_gbmi,
