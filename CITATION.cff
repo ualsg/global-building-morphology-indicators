@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Biljecki"
+  given-names: "Filip"
+  orcid: "https://orcid.org/0000-0002-6229-7749"
+  affiliation: "National University of Singapore, Singapore"
+  - family-names: "Chow"
+    given-names: "Yoong Shin"
+    orcid: "https://orcid.org/0000-0001-9194-627X"
+    affiliation: "National University of Singapore, Singapore"
+title: "Global Building Morphology Indicators"
+version: 1.0
+date-released: 2022-05-05
+url: "https://github.com/ualsg/global-building-morphology-indicators"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Biljecki"
+    given-names: "Filip"
+    orcid: "https://orcid.org/0000-0002-6229-7749"
+    affiliation: "National University of Singapore, Singapore"
+  - family-names: "Chow"
+    given-names: "Yoong Shin"
+    orcid: "https://orcid.org/0000-0001-9194-627X"
+    affiliation: "National University of Singapore, Singapore"
+  doi: "10.1016/j.compenvurbsys.2022.101809"
+  journal: "Computers, Environment and Urban Systems"
+  title: "Global Building Morphology Indicators"
+  year: 2022
